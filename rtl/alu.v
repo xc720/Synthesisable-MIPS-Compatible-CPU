@@ -16,13 +16,13 @@ always_comb begin
     4'b0011 : result = $unsigned(a) - $unsigned(b); // SUBU
     4'b0100 : result = $signed(a) < $signed(b); // SLT
     4'b0101 : result = $unsigned(a) < $unsigned(b); // SLTU
-    4'b0110 : result = a << shift; // SLL
+    4'b0110 : result = (a << shift); // SLL
     4'b0111 : result = a << b; // SLLV
     4'b1000 : result = a >> shift; // SRL
     4'b1001 : result = a >> b; // SRLV
-    4'b1010 : result = a >>> shift; // SRA
-    4'b1011 : result = a >>> b; // SRAV
-    default : result = 0;
+    4'b1010 : result = $signed(a) >>> shift; // SRA
+    4'b1011 : result = $signed(a) >>> b; // SRAV
+    default : result = 1;
   endcase
 end
 
