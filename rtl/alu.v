@@ -1,5 +1,5 @@
 module ALU(
-  input logic[5:0] opcode,
+  //input logic[5:0] opcode,
   input logic[4:0] funct,
   input logic[31:0] a,
   input logic[31:0] b,
@@ -12,7 +12,7 @@ always_comb begin
   case(funct)
     4'b0000 : result = $unsigned(a) + $unsigned(b); // ADDU  (immediate or not determined elsewhere)
     4'b0001 : result = a & b; // AND
-    4'b0010 : result = a || b; // OR
+    4'b0010 : result = a | b; // OR
     4'b0011 : result = $unsigned(a) - $unsigned(b); // SUBU
     4'b0100 : result = $signed(a) < $signed(b); // SLT
     4'b0101 : result = $unsigned(a) < $unsigned(b); // SLTU
