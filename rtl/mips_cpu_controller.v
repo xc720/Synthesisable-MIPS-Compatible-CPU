@@ -2,19 +2,20 @@ module controler (
     input logic [5:0] opcode,
     input logic [5:0] fncode,
     input logic [2:0] state,
-    input logic waitrequest,
 
     output logic regdst,
     output logic regwrite,
     output logic iord,
     output logic irwrite,
     output logic pcwrite,
-    output logic pcsource,
+    output logic [1:0] pcsource,
+    output logic pcwritecond,
     output logic memread,
     output logic memwrite,
     output logic memtoreg,
-    output logic [1:0] aluop,
-    output logic alusrc
+    output logic [3:0] aluop,
+    output logic alusrca,
+    output logic [1:0] alusrcb
 
 );
   logic fetch, decode, exec1, exec2;
@@ -24,45 +25,83 @@ module controler (
     decode = (state == 2);
     exec1  = (state == 3);
     exec2  = (state == 4);
-  end
 
-
-
-  always_comb begin
     if (fetch) begin
       regdst = 0;
       regwrite = 0;
       iord = 0;
-      irwrite = 0;
+      irwrite = 1;
+      pcwrite = 1;
+      pcsource = 0;
+      pcwritecond = 0;
       memread = 1;
       memwrite = 0;
       memtoreg = 0;
       aluop = 0;
-      alusrc = 0;
+      alusrca = 0;
+      alusrcb = 1;
 
     end else if (decode) begin
       regdst = 0;
       regwrite = 0;
       iord = 0;
-      irwrite = 1;
+      irwrite = 0;
+      pcwrite = 0;
+      pcsource = 0;
+      pcwritecond = 0;
       memread = 0;
       memwrite = 0;
       memtoreg = 0;
       aluop = 0;
-      alusrc = 0;
+      alusrca = 0;
+      alusrcb = 3;
 
     end else begin
       case (opcode)
         6'h0: begin  //Rtype
-          regdst = 1;
-          regwrite = exec2;
-          iord = 0;
-          irwrite = 0;
-          memread = 0;
-          memwrite = 0;
-          memtoreg = 0;
-          alusrc = 0;
-          aluop = 2;
+          if (fncode >= 5'h20 && fncode <= 5'h26) begin  //Arithmetic and logical
+            regdst = 1;
+            regwrite = exec2;
+            iord = 0;
+            irwrite = 0;
+            pcwrite = 0;
+            pcsource = 0;
+            pcwritecond = 0;
+            memread = 0;
+            memwrite = 0;
+            memtoreg = 0;
+            aluop = 2;
+            alusrca = 1;
+            alusrcb = 0;
+          end else if (fncode == 5'h8) begin  //JR
+            regdst = 0;
+            regwrite = 0;
+            iord = 0;
+            irwrite = 0;
+            pcwrite = exec2;
+            pcsource = 3;
+            pcwritecond = 0;
+            memread = 0;
+            memwrite = 0;
+            memtoreg = 0;
+            aluop = 0;
+            alusrca = 0;
+            alusrcb = 0;
+          end else if (fncode == 5'h9) begin  //JALR
+            regdst = 1;
+            regwrite = exec2;
+            iord = 0;
+            irwrite = 0;
+            pcwrite = exec2;
+            pcsource = 3;
+            pcwritecond = 0;
+            memread = 0;
+            memwrite = 0;
+            memtoreg = 0;
+            aluop = 0;
+            alusrca = 0;
+            alusrcb = 1;
+          end
         end
         6'h23: begin  //lw
           regdst = 0;
