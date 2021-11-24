@@ -1,17 +1,40 @@
-module mips_cpu_bus(
+module mips_cpu_bus (
     /* Standard signals */
     input logic clk,
     input logic reset,
     output logic active,
-    output logic[31:0] register_v0,
+    output logic [31:0] register_v0,
 
     /* Avalon memory mapped bus controller (master) */
-    output logic[31:0] address,
+    output logic [31:0] address,
     output logic write,
     output logic read,
     input logic waitrequest,
-    output logic[31:0] writedata,
-    output logic[3:0] byteenable,
-    input logic[31:0] readdata
+    output logic [31:0] writedata,
+    output logic [3:0] byteenable,
+    input logic [31:0] readdata
 );
+
+  logic [2:0] state;
+
+  initial begin
+    state  = 1;
+    active = 1;
+  end
+
+  always_ff @(posedge clk) begin  //state machine
+    if (reset) begin
+      state <= 1;
+    end else if (!waitrequest) begin
+      if (state == 4) begin
+        state <= 1;
+      end else begin
+        state <= state + 1;
+      end
+    end
+  end
+
+
+
 endmodule
+
