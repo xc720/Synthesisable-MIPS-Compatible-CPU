@@ -31,8 +31,9 @@ module mips_register_file(
     end
 
     // return data
+    assign src_data_v0 = register[2];
     assign src_data_1 = (src_addr_1 == 0) ? 32'b0 : register[src_addr_1];
     assign src_data_2 = (src_addr_2 == 0) ? 32'b0 : register[src_addr_2];
-    assign src_data_v0 = register[2];
+    
 
 endmodule
