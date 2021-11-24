@@ -38,5 +38,15 @@ module mips_cpu_bus (
     end
   end
 
+  logic [31:0] memdatareg, instreg, alureg;
+
+  always_ff @(posedge clk) begin
+    memdatareg <= memdata;
+    alureg <= aluout;
+    if (irwrite) begin
+      instreg <= memdata;
+    end
+  end
+
 endmodule
 
