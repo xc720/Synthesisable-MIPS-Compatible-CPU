@@ -18,15 +18,14 @@ module controler (
     output logic [1:0] alusrcb
 
 );
-  logic fetch, decode, exec1, exec2;
+
+  logic exec1, exec2;
 
   always_comb begin
-    fetch  = (state == 1);
-    decode = (state == 2);
-    exec1  = (state == 3);
-    exec2  = (state == 4);
+    exec1 = (state == 3);
+    exec2 = (state == 4);
 
-    if (fetch) begin
+    if (state == 1) begin
       regdst = 0;
       regwrite = 0;
       iord = 0;
@@ -41,7 +40,7 @@ module controler (
       alusrca = 0;
       alusrcb = 1;
 
-    end else if (decode) begin
+    end else if (state == 2) begin
       regdst = 0;
       regwrite = 0;
       iord = 0;
@@ -89,7 +88,7 @@ module controler (
             alusrcb = 0;
           end else if (fncode == 5'h9) begin  //JALR
             regdst = 1;
-            regwrite = exec2;
+            regwrite = exec1;
             iord = 0;
             irwrite = 0;
             pcwrite = exec2;
@@ -108,33 +107,45 @@ module controler (
           regwrite = exec2;
           iord = 1;
           irwrite = 0;
+          pcwrite = 0;
+          pcsource = 0;
+          pcwritecond = 0;
           memread = exec1;
           memwrite = 0;
           memtoreg = 1;
           aluop = 0;
-          alusrc = 1;
+          alusrca = 1;
+          alusrcb = 2;
         end
         6'h2b: begin  //sw
           regdst = 0;
           regwrite = 0;
           iord = 1;
           irwrite = 0;
+          pcwrite = 0;
+          pcsource = 0;
+          pcwritecond = 0;
           memread = 0;
           memwrite = exec2;
           memtoreg = 0;
           aluop = 0;
-          alusrc = 1;
+          alusrca = 1;
+          aluscr2 = 2;
         end
         6'h4: begin  //beq
           regwrite = 0;
           regdst = 0;
-          iord = 1;
+          iord = 0;
           irwrite = 0;
+          pcwrite = 0;
+          pcsource = 1;
+          pcwritecond = 1;
           memread = 0;
           memwrite = 0;
           memtoreg = 0;
           aluop = 1;
-          alusrc = 0;
+          alusrca = 1;
+          aluscrb = 0;
         end
 
         default: begin
