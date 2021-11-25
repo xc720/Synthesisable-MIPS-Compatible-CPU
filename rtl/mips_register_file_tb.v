@@ -1,25 +1,25 @@
-`timescale 1ns / 1ps
+`timescale 1ns/100ps
 module mips_register_file_tb(
 );
     reg [31:0] write_data;
-    reg [4:0] src_addr_1;
-    reg [4:0] src_addr_2;
-    reg [4:0] dst_addr;
-    wire [31:0] src_data_1;
-    wire [31:0] src_data_2;
-    wire [31:0] src_data_v0;
+    reg [4:0] read_reg_1;
+    reg [4:0] read_reg_2;
+    reg [4:0] write_reg;
+    wire [31:0] read_data_1;
+    wire [31:0] read_data_2;
+    wire [31:0] read_data_v0;
     reg clk;
     reg reset;
     reg write_enable;
 
     mips_register_file inst_reg(
         .write_data(write_data),
-        .src_addr_1(src_addr_1),
-        .src_addr_2(src_addr_2),
-        .dst_addr(dst_addr),
-        .src_data_1(src_data_1),
-        .src_data_2(src_data_2),
-        .src_data_v0(src_data_v0),
+        .read_reg_1(read_reg_1),
+        .read_reg_2(read_reg_2),
+        .write_reg(write_reg),
+        .read_data_1(read_data_1),
+        .read_data_2(read_data_2),
+        .read_data_v0(read_data_v0),
         .clk(clk),
         .reset(reset),
         .write_enable(write_enable)
@@ -30,59 +30,66 @@ module mips_register_file_tb(
         $dumpfile("mips_register_file_tb.vcd");
         $dumpvars(0, mips_register_file_tb);
 
-        /* Clock low. */
+        // initialise
         clk = 0;
+
         reset = 1;
-        dst_addr=0;
+        write_reg=0;
         write_enable=0;
         write_data=0;
 
-        /* Rising edge */
         #5 clk = 1;
-
-        /* Falling edge */
         #5 clk = 0;
-        /* Check outputs */
-        assert(src_data_1==0);
-        /* Drive new inputs */
+        
+        // test writing and reading single register
+        $display("\n-=-=-=- TEST SINGLE WRITE & READ -=-=-=-");
         reset = 0;
-        src_addr_1 = 1;
-        dst_addr = 0;
-        write_data = 3;
         write_enable = 1;
-
-        /* Rising edge */
+        write_data = 1234567;
+        write_reg = 16;
+        read_reg_1 = 16;
+        
         #5 clk = 1;
-
-        /* Falling edge */
         #5 clk = 0;
-        /* Check outputs */
-        assert(src_data_1==0);
-        /* Drive new inputs */
-        src_addr_1 = 0;
-        dst_addr = 1;
-        write_data = 7;
-        write_enable = 1;
 
-        /* Rising edge */
-        #5 clk = 1;
-
-        /* Falling edge */
-        #5 clk = 0;
-        /* Check outputs */
-        assert(src_data_1==3);
-        /* Drive new inputs */
-        src_addr_1 = 1;
-        dst_addr = 0;
-        write_data = 10;
         write_enable = 0;
+        assert(read_data_1 == 1234567);
+        $display("[READ EVENT]\tREG%d\t->%d",read_reg_1, read_data_1);
 
-        /* Rising edge */
         #5 clk = 1;
-
-        /* Falling edge */
         #5 clk = 0;
-        /* Check outputs */
-        assert(src_data_1==7);
+
+        // testing dual read port
+        $display("\n-=-=-=- TEST DUAL READ PORTS -=-=-=-");
+        write_enable = 1;
+        write_data = 7654321;
+        write_reg = 20;
+
+        // dual read ports set
+        read_reg_1 = 16;
+        read_reg_2 = 20;
+
+        #5 clk = 1;
+        #5 clk = 0;
+
+        write_enable = 0;
+        assert(read_data_2 == 7654321);
+        $display("[READ EVENT]\tREG%d\t->%d",read_reg_1, read_data_1);
+        $display("[READ EVENT]\tREG%d\t->%d",read_reg_2, read_data_2);
+
+        #5 clk = 1;
+        #5 clk = 0;
+
+        // test reset
+        $display("\n-=-=-=- TEST REGISTER RESET -=-=-=-");
+        reset = 1;
+
+        #5 clk = 1;
+        #5 clk = 0;
+
+        $display("[READ EVENT]\tREG%d\t->%d",read_reg_1, read_data_1);
+        $display("[READ EVENT]\tREG%d\t->%d",read_reg_2, read_data_2);
+
+
     end
 endmodule
