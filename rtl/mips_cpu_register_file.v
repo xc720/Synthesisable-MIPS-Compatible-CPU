@@ -1,5 +1,5 @@
 `timescale 1ns / 100ps
-module mips_register_file (
+module mips_cpu_register_file (
     // control ports
     input logic clk,
     input logic reset,
@@ -13,30 +13,26 @@ module mips_register_file (
     output logic [31:0] read_data_1,
     output logic [31:0] read_data_2,
     output logic [31:0] read_data_v0
-
 );
   // create 32x32-bit register
   logic [31:0] register[31:0];
+
+  // return data
+  assign read_data_v0 = register[2];
+  assign read_data_1  = register[read_reg_1];
+  assign read_data_2  = register[read_reg_2];
 
   // reset & write
   always_ff @(posedge clk) begin
     // reset register
     if (reset) begin
       for (int i = 0; i < 32; i++) register[i] <= 0;
-    end
-        // write to register
-        else
-    begin
+    end else begin
+      // write to register
       if (write_enable && write_reg != 0) begin
         register[write_reg] <= write_data;
-        $display("[WRITE EVENT]\tREG%d\t<-%d", write_reg, write_data);
       end
     end
   end
-
-  // return data
-  assign read_data_v0 = register[2];
-  assign read_data_1  = register[read_reg_1];
-  assign read_data_2  = register[read_reg_2];
 
 endmodule

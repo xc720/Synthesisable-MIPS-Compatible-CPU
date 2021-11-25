@@ -1,17 +1,17 @@
 `timescale 1ns / 100ps
-module mips_register_file_tb ();
-  logic [31:0] write_data;
-  logic [4:0] read_reg_1;
-  logic [4:0] read_reg_2;
-  logic [4:0] write_reg;
-  logic [31:0] read_data_1;
-  logic [31:0] read_data_2;
-  logic [31:0] read_data_v0;
-  logic clk;
-  logic reset;
-  logic write_enable;
+module mips_cpu_register_tb ();
+  reg [31:0] write_data;
+  reg [4:0] read_reg_1;
+  reg [4:0] read_reg_2;
+  reg [4:0] write_reg;
+  wire [31:0] read_data_1;
+  wire [31:0] read_data_2;
+  wire [31:0] read_data_v0;
+  reg clk;
+  reg reset;
+  reg write_enable;
 
-  mips_register_file inst_reg (
+  mips_cpu_register_file inst_reg (
       .write_data(write_data),
       .read_reg_1(read_reg_1),
       .read_reg_2(read_reg_2),
@@ -26,8 +26,8 @@ module mips_register_file_tb ();
 
   initial begin
     $timeformat(-9, 1, " ns", 100);
-    $dumpfile("mips_register_file_tb.vcd");
-    $dumpvars(0, mips_register_file_tb);
+    $dumpfile("mips_cpu_register_tb.vcd");
+    $dumpvars(0, mips_cpu_register_tb);
 
     // initialise
     clk = 0;
