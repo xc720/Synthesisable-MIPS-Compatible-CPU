@@ -87,6 +87,8 @@ module mips_register_file_tb(
         #5 clk = 1;
         #5 clk = 0;
 
+        assert(read_data_1 == 0);
+        assert(read_data_2 == 0);
         $display("[READ EVENT]\tREG%d\t->%d",read_reg_1, read_data_1);
         $display("[READ EVENT]\tREG%d\t->%d",read_reg_2, read_data_2);
 
