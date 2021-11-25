@@ -18,8 +18,9 @@ module mips_cpu_bus (
   logic [2:0] state;  //0-halt 1-fetch 2-decode 3-exec1 4-exec2
 
   initial begin
-    state  = 0;
+    state = 0;
     active = 0;
+    jumpcondreg = 0;
   end
 
   always_ff @(posedge clk) begin  //state machine
