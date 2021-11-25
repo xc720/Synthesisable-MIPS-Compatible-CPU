@@ -31,23 +31,11 @@ module mips_cpu_register_file (
         // write to register
         else
     begin
-<<<<<<< HEAD
       if (write_enable & write_reg != 0) begin
-=======
-      if (write_enable && write_reg != 0) begin
->>>>>>> 9b16c8d013f37299435d6ea3ae2ced9f86eca796
         register[write_reg] <= write_data;
         $display("[WRITE EVENT]\tREG%d\t<-%d", write_reg, write_data);
       end
     end
   end
 
-<<<<<<< HEAD
-=======
-  // return data
-  assign read_data_v0 = register[2];
-  assign read_data_1  = register[read_reg_1];
-  assign read_data_2  = register[read_reg_2];
-
->>>>>>> 9b16c8d013f37299435d6ea3ae2ced9f86eca796
 endmodule
