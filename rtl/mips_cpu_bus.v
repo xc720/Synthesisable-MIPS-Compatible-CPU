@@ -39,7 +39,7 @@ module mips_cpu_bus (
     end
   end
 
-  logic [31:0] memdatareg, instreg, alureg, jumpdestreg, jumpcondreg;
+  logic [31:0] memdatareg, alureg, jumpdestreg, jumpcondreg;
 
   always_ff @(posedge clk) begin
     memdatareg <= memdata;
@@ -50,9 +50,6 @@ module mips_cpu_bus (
       //TODO: Set jumpdestreg to the ouput of the jump mux
     end
 
-    if (irwrite) begin
-      instreg <= memdata;
-    end
   end
 
 endmodule
