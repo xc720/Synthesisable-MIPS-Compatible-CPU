@@ -10,6 +10,7 @@ module controler (
     output logic pcwrite,
     output logic [1:0] pcsource,
     output logic pcwritecond,
+    output logic jump,
     output logic memread,
     output logic memwrite,
     output logic memtoreg,
@@ -33,6 +34,7 @@ module controler (
       pcwrite = 1;
       pcsource = 0;
       pcwritecond = 0;
+      jump = 0;
       memread = 1;
       memwrite = 0;
       memtoreg = 0;
@@ -48,6 +50,7 @@ module controler (
       pcwrite = 0;
       pcsource = 0;
       pcwritecond = 0;
+      jump = 0;
       memread = 0;
       memwrite = 0;
       memtoreg = 0;
@@ -66,6 +69,7 @@ module controler (
             pcwrite = 0;
             pcsource = 0;
             pcwritecond = 0;
+            jump = 0;
             memread = 0;
             memwrite = 0;
             memtoreg = 0;
@@ -77,9 +81,10 @@ module controler (
             regwrite = 0;
             iord = 0;
             irwrite = 0;
-            pcwrite = exec2;
+            pcwrite = 0;
             pcsource = 3;
             pcwritecond = 0;
+            jump = 1;
             memread = 0;
             memwrite = 0;
             memtoreg = 0;
@@ -91,9 +96,10 @@ module controler (
             regwrite = exec1;
             iord = 0;
             irwrite = 0;
-            pcwrite = exec2;
+            pcwrite = 0;
             pcsource = 3;
             pcwritecond = 0;
+            jump = 1;
             memread = 0;
             memwrite = 0;
             memtoreg = 0;
@@ -110,6 +116,7 @@ module controler (
           pcwrite = 0;
           pcsource = 0;
           pcwritecond = 0;
+          jump = 0;
           memread = exec1;
           memwrite = 0;
           memtoreg = 1;
@@ -125,6 +132,7 @@ module controler (
           pcwrite = 0;
           pcsource = 0;
           pcwritecond = 0;
+          jump = 0;
           memread = 0;
           memwrite = exec2;
           memtoreg = 0;
@@ -140,6 +148,7 @@ module controler (
           pcwrite = 0;
           pcsource = 1;
           pcwritecond = 1;
+          jump = 0;
           memread = 0;
           memwrite = 0;
           memtoreg = 0;
