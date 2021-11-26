@@ -127,9 +127,9 @@ module mips_cpu_bus(
         .read_data_v0(read_reg_v0)
     );
 
-    mips_memory_data_register my_mem_holder(
-        .memory_in(mem_data),
-        .memory_out(mem_reg_out)
+    mips_reg_holder my_mem_holder( //can just have an alwaysff block
+        .reg_val_d(mem_data),
+        .reg_val_q(mem_reg_out)
     );
 
     mips_reg_holder a(
