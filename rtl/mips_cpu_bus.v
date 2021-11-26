@@ -44,7 +44,6 @@ module mips_cpu_bus (
   logic [31:0] sign_extended_immediate;
 
   //variables for register file
-  logic reg_enable;
   logic [4:0] reg_source_1, reg_source_2, reg_dest;
   logic [31:0] reg_write_data, read_reg_1, read_reg_2;
   logic [4:0] reg_write_address;
