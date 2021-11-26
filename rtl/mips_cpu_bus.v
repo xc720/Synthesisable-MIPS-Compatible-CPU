@@ -1,17 +1,147 @@
-module mips_cpu_bus(
+//assumed that the gates that feed into the PC are part of the PC module 
+//need to implement updated data path
+//need to get accurate input/output names
+
+module mips_cpu_bus (
     /* Standard signals */
     input logic clk,
     input logic reset,
     output logic active,
-    output logic[31:0] register_v0,
+    output logic [31:0] register_v0
+);  //logic for clk, reset, active, register_v0 not yet implemented
 
-    /* Avalon memory mapped bus controller (master) */
+  /* Avalon memory mapped bus controller     
     output logic[31:0] address,
-    output logic write,
-    output logic read,
+    output logic write, 
+    output logic read, 
     input logic waitrequest,
     output logic[31:0] writedata,
     output logic[3:0] byteenable,
     input logic[31:0] readdata
-);
+    ); */
+
+  //variables for pc
+  logic [31:0] pc_address_in, pc_next_address;
+
+  //variables for alu (need to add in the alu_control)
+  logic [31:0] alu_result, alu_in_a, alu_in_b, alu_out;
+  logic alu_zero;
+
+  //variables for A and B registers
+  logic [31:0] read_reg_a_next, read_reg_b_next;
+
+  //variables for memory
+  logic [31:0] mem_address, mem_write_data, mem_data;
+
+  //variables for memory data register
+  logic [31:0] mem_reg_out;
+
+  //variables for ir
+  logic ir_state;  //ADDED THIS FOR COMPILATION BUT NOT REPRESENTED ON DATAPATH, 
+  logic [5:0] opcode, fncode;
+  logic [25:0] jmp_address;
+  logic [15:0] immediate;
+  logic [31:0] sign_extended_immediate;
+
+  //variables for register file
+  logic reg_enable;
+  logic [4:0] reg_source_1, reg_source_2, reg_dest;
+  logic [31:0] reg_write_data, read_reg_1, read_reg_2;
+  logic [4:0] reg_write_address;
+
+  //variables for control
+  logic
+      pcwritecond, pcwrite, iord, mem_read, memwrite, memtoreg, ir_write, regdst, regwrite, alusrca;
+  logic [1:0] alusrcb, pcsource;
+  logic [3:0] aluop;
+
+  //variables for state machine (not initialised in this file)
+  logic [2:0] state;
+
+  assign sign_extended_immediate = immediate; //how can i sign extend inside of the mux expression in line 66
+
+  //implementing all multiplexers
+  assign mem_address = iord ? pc_next_address : alu_result;
+  assign reg_write_address = regdst ? reg_source_2 : reg_dest;
+  assign reg_write_data = memtoreg ? alu_result : mem_reg_out;
+  assign alu_in_a = alusrca ? pc_next_address : read_reg_a_next;
+  assign alu_in_b = alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_next);
+  assign pc_address_in = pcsource[1] ? (pcsource[0] ? read_reg_a_next : {pc_next_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
+
+  //implementing all single registers
+  always_ff @(posedge clk) begin
+    mem_reg_out <= mem_data;
+    read_reg_a_next <= read_reg_1;
+    read_reg_b_next <= read_reg_2;
+    alu_out <= alu_result;
+  end
+
+  //instantiate all modules 
+  pc this_pc (
+      .pc_in(pc_address_in),
+      .pc_write(pcwrite),
+      .pc_write_cond(pcwritecond),
+      .alu_zero(alu_zero),
+      .pc_out(pc_next_address)
+  );
+
+  memory this_memory (
+      .address(mem_address),
+      .data(mem_write_data),
+      .mem_data(mem_data)
+  );
+
+  controler my_control (
+      .opcode(opcode),
+      .fncode(fncode),
+      .state(state),
+      .regdst(regdst),
+      .regwrite(regwrite),
+      .iord(iord),
+      .irwrite(ir_write),
+      .pcwrite(pcwrite),
+      .pcsource(pcsource),
+      .pcwritecond(pcwritecond),
+      .memread(mem_read),
+      .memwrite(memwrite),
+      .memtoreg(memtoreg),
+      .aluop(aluop),
+      .alusrcb(alusrcb),
+      .alusrca(alusrca)
+  );
+
+  instruction_register my_instruction_register (
+      .clk(clk),
+      .enable(reg_enable),
+      .state(ir_state),
+      .memory_output(mem_data),
+      .control_input(opcode),  //instruction[31-26]
+      .source_1(reg_source_1),  // instruction[25:21] 
+      .source_2(reg_source_2),  //instruction[20:16]   
+      .dest(reg_dest),  //instruction[15:11]
+      .immediate(immediate),  //instruction[15:0]
+      .jmp_address(jmp_address),  //instruction[25:0]
+      .funct(fncode)  //instruction[5:0]
+  );
+
+  mips_register_file my_register_file (
+      .clk(clk),
+      .reset(reset),
+      .write_enable(write_enable),
+      .read_reg_1(reg_source_1),
+      .read_reg_2(reg_source_2),
+      .write_reg(reg_write_address),
+      .write_data(reg_write_data),
+      .read_data_1(read_reg_1),
+      .read_data_2(read_reg_2),
+      .read_data_v0(register_v0)
+  );
+
+  mips_alu my_alu (
+      .a(alu_in_a),
+      .b(alu_in_b),
+      .zero(zero),
+      .alu_result(alu_result)
+  );
+
 endmodule
