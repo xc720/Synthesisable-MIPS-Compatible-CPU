@@ -100,16 +100,15 @@ module mips_cpu_bus(
         .alusrca(alusrca)
     );
 
-
     instruction_register my_instruction_register(
         .clk(clk),
         .enable(reg_enable),
         .state(ir_state),
         .memory_output(mem_data),
         .control_input(opcode), //instruction[31-26]
-        .source_1(reg_source_1), // instruction[25:21] RENAMED FROM SOURCE_1
-        .source_2(reg_source_2), //instruction[20:16]   RENAMED
-        .dest(reg_dest), //instruction[15:11] RENMAED FROM DEST_REG
+        .source_1(reg_source_1), // instruction[25:21] 
+        .source_2(reg_source_2), //instruction[20:16]   
+        .dest(reg_dest), //instruction[15:11]
         .immediate(immediate), //instruction[15:0]
         .jmp_address(jmp_address), //instruction[25:0]
         .funct(fncode) //instruction[5:0]
@@ -151,7 +150,7 @@ module mips_cpu_bus(
     mips_alu my_alu(
         .a(alu_in_a),
         .b(alu_in_b),
-        .zero(zero), //there's another input from the alu control
+        .zero(zero), 
         .alu_result(alu_result)
     );
 endmodule
