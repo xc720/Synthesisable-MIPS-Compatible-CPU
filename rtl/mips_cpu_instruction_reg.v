@@ -20,8 +20,10 @@ module instruction_register (
     /*16 bits immediate constant*/
     output logic [25:0] jmp_address,
     /*memory address for J-type instruction*/
-    output logic [ 5:0] funct
+    output logic [ 5:0] funct,
     /*function code*/
+    output logic [ 5:0] shamt
+    /*shift for alu*/
 );
 
   logic [31:0] instruction;

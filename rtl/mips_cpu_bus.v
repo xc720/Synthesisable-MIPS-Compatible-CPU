@@ -25,6 +25,7 @@ module mips_cpu_bus (
 
   //variables for alu (need to add in the alu_control)
   logic [31:0] alu_result, alu_in_a, alu_in_b, alu_out;
+  logic zero;
 
   //variables for A and B registers
   logic [31:0] read_reg_a_current, read_reg_b_current;
@@ -37,7 +38,7 @@ module mips_cpu_bus (
   logic [31:0] jumpdestreg, jumpcondreg, increment_pc;
 
   //variables for ir
-  logic [5:0] opcode, fncode;
+  logic [5:0] opcode, fncode, shift;
   logic [25:0] jmp_address;
   logic [15:0] immediate;
   logic [31:0] sign_extended_immediate;
@@ -82,9 +83,11 @@ module mips_cpu_bus (
     end
   end
 
-  assign sign_extended_immediate = immediate; //how can i sign extend inside of the mux expression in line 66
+  //sign extend immediate
+  assign sign_extended_immediate = immediate[15] ? {16'hFFFF, immediate} : {16'h0000, immediate};
 
-  assign memwritedata = read_reg_b_current;  //assign where to write to memory from
+  //assign where to write to memory from
+  assign memwritedata = read_reg_b_current;
 
   //implementing all multiplexers
   assign mem_address = iord ? pc_current_address : alu_result;
@@ -147,13 +150,14 @@ module mips_cpu_bus (
       .dest(reg_dest),  //instruction[15:11]
       .immediate(immediate),  //instruction[15:0]
       .jmp_address(jmp_address),  //instruction[25:0]
+      .shamt(shift),  //instruction[6:10]
       .funct(fncode)  //instruction[5:0]
   );
 
   mips_cpu_register_file cpu_register_file (
       .clk(clk),
       .reset(reset),
-      .write_enable(write_enable),
+      .write_enable(regwrite),
       .read_reg_1(reg_source_1),
       .read_reg_2(reg_source_2),
       .write_reg(reg_write_address),
