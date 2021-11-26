@@ -1,5 +1,6 @@
 //assumed that the gates that feed into the PC are part of the PC module 
 //need to get accurate input/output names
+
 module mips_cpu_bus(
     /* Standard signals */
     input logic clk,
@@ -20,16 +21,15 @@ module mips_cpu_bus(
     //variables for pc
     logic[31:0] pc_address_in, pc_next_address;
     
-    //variables for alu
+    //variables for alu (need to add in the alu_control)
     logic[31:0] alu_result, alu_in_a, alu_in_b, alu_out; 
     logic alu_zero;
-    //need to add in the alu_control!!
 
     //variables for memory
     logic[31:0] mem_address, mem_write_data, mem_data;
 
     //variables for ir
-    logic ir_state; //ADDED THIS FOR COMPILATION BUT NOT YET REPRESENTED ON DATAPATH, 
+    logic ir_state; //ADDED THIS FOR COMPILATION BUT NOT REPRESENTED ON DATAPATH, 
     logic[5:0] opcode, fncode;
     logic[25:0] jmp_address;
     logic[15:0] immediate; 
@@ -53,7 +53,7 @@ module mips_cpu_bus(
 
     logic[31:0] sign_extended , read_data_v0, memory_out;
     
-    logic[4:0]  write_reg;
+    logic[4:0] write_reg;
     logic[2:0] state ;
 
     assign sign_extended = immediate; //how can i sign extend inside of the mux expression in line 66
