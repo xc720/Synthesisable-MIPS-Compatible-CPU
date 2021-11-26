@@ -66,6 +66,14 @@ module mips_cpu_bus(
     assign alu_in_b = alusrcb[1] ? (alusrcb[0] ? (sign_extended << 2) : sign_extended ) : (alusrcb[0] ? 4 : read_reg_b_next);
     assign pc_address_in = pcsource[1] ? (pcsource[0] ? read_reg_a_next : {pc_next_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result); //the jmp_address is the wrong width 
     
+    //implementing all single registers
+    always_ff @(posedge clk) begin
+        mem_reg_out <= mem_data;
+        read_reg_a_next <= read_reg_1;
+        read_reg_b_next <= read_reg_2;
+        alu_out <= alu_result;
+    end
+    
     //instantiate all modules 
     pc this_pc(  
         .pc_in(pc_address_in),
@@ -125,26 +133,6 @@ module mips_cpu_bus(
         .read_data_1(read_reg_1),
         .read_data_2(read_reg_2),
         .read_data_v0(read_reg_v0)
-    );
-
-    mips_reg_holder my_mem_holder( //can just have an alwaysff block
-        .reg_val_d(mem_data),
-        .reg_val_q(mem_reg_out)
-    );
-
-    mips_reg_holder a(
-        .reg_val_d(read_reg_1),
-        .reg_val_q(read_reg_a_next)
-    );
-
-    mips_reg_holder b(
-        .reg_val_d(read_reg_2),
-        .reg_val_q(read_reg_b_next)
-    );
-
-    mips_reg_holder alu_reg(
-        .reg_val_d(alu_result),
-        .reg_val_q(alu_out)
     );
 
     mips_alu my_alu(
