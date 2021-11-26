@@ -13,7 +13,7 @@ module controler (
     output logic jump,
     output logic memread,
     output logic memwrite,
-    output logic memtoreg,
+    output logic [1:0] memtoreg,
     output logic [3:0] aluop,
     output logic alusrca,
     output logic [1:0] alusrcb
@@ -84,7 +84,7 @@ module controler (
             pcwrite = 0;
             pcsource = 3;
             pcwritecond = 0;
-            jump = 1;
+            jump = exec2;
             memread = 0;
             memwrite = 0;
             memtoreg = 0;
@@ -99,7 +99,7 @@ module controler (
             pcwrite = 0;
             pcsource = 3;
             pcwritecond = 0;
-            jump = 1;
+            jump = exec2;
             memread = 0;
             memwrite = 0;
             memtoreg = 0;
