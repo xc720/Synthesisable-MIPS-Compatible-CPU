@@ -1,14 +1,16 @@
 //assumed that the gates that feed into the PC are part of the PC module 
+//need to implement updated data path
 //need to get accurate input/output names
 
 module mips_cpu_bus(
     /* Standard signals */
     input logic clk,
-    input logic reset,
+    input logic reset, 
     output logic active, 
-    output logic[31:0] register_v0,
+    output logic[31:0] register_v0
+    ); //logic for clk, reset, active, register_v0 not yet implemented
 
-    /* Avalon memory mapped bus controller*/      
+    /* Avalon memory mapped bus controller     
     output logic[31:0] address,
     output logic write, 
     output logic read, 
@@ -16,7 +18,7 @@ module mips_cpu_bus(
     output logic[31:0] writedata,
     output logic[3:0] byteenable,
     input logic[31:0] readdata
-    );
+    ); */
    
     //variables for pc
     logic[31:0] pc_address_in, pc_next_address;
@@ -25,46 +27,45 @@ module mips_cpu_bus(
     logic[31:0] alu_result, alu_in_a, alu_in_b, alu_out; 
     logic alu_zero;
 
+     //variables for A and B registers
+    logic[31:0] read_reg_a_next, read_reg_b_next; 
+
     //variables for memory
     logic[31:0] mem_address, mem_write_data, mem_data;
+   
+    //variables for memory data register
+    logic[31:0] mem_reg_out;
 
     //variables for ir
     logic ir_state; //ADDED THIS FOR COMPILATION BUT NOT REPRESENTED ON DATAPATH, 
     logic[5:0] opcode, fncode;
     logic[25:0] jmp_address;
     logic[15:0] immediate; 
-
-    //variables for memory data register
-    logic[31:0] mem_reg_out;
+    logic[31:0] sign_extended_immediate;
 
     //variables for register file
-    logic reg_enable ;
+    logic reg_enable;
     logic[4:0] reg_source_1, reg_source_2, reg_dest;
-    logic[31:0] reg_write_data, read_reg_1, read_reg_2, read_reg_v0;
+    logic[31:0] reg_write_data, read_reg_1, read_reg_2;
     logic[4:0] reg_write_address;
 
     //variables for control
-    logic pc_write_cond, pc_write, i_or_d, mem_read, memwrite, memtoreg, ir_write, regdst, regwrite, alusrca;
+    logic pcwritecond, pcwrite, iord, mem_read, memwrite, memtoreg, ir_write, regdst, regwrite, alusrca;
     logic[1:0] alusrcb, pcsource;
     logic[3:0] aluop;
 
-    //variables for A and B registers
-    logic[31:0] read_reg_a_next, read_reg_b_next; 
+    //variables for state machine (not initialised in this file)
+    logic[2:0] state;
 
-    logic[31:0] sign_extended , read_data_v0, memory_out;
-    
-    logic[4:0] write_reg;
-    logic[2:0] state ;
-
-    assign sign_extended = immediate; //how can i sign extend inside of the mux expression in line 66
+    assign sign_extended_immediate = immediate; //how can i sign extend inside of the mux expression in line 66
 
     //implementing all multiplexers
-    assign mem_address = i_or_d ? pc_next_address : alu_result ; 
-    assign write_reg = regdst ? reg_source_2 : reg_dest;    
+    assign mem_address = iord ? pc_next_address : alu_result ; 
+    assign reg_write_address = regdst ? reg_source_2 : reg_dest;    
     assign reg_write_data = memtoreg ? alu_result : mem_reg_out ;
     assign alu_in_a = alusrca ? pc_next_address : read_reg_a_next;
-    assign alu_in_b = alusrcb[1] ? (alusrcb[0] ? (sign_extended << 2) : sign_extended ) : (alusrcb[0] ? 4 : read_reg_b_next);
-    assign pc_address_in = pcsource[1] ? (pcsource[0] ? read_reg_a_next : {pc_next_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result); //the jmp_address is the wrong width 
+    assign alu_in_b = alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_next);
+    assign pc_address_in = pcsource[1] ? (pcsource[0] ? read_reg_a_next : {pc_next_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
     
     //implementing all single registers
     always_ff @(posedge clk) begin
@@ -73,12 +74,12 @@ module mips_cpu_bus(
         read_reg_b_next <= read_reg_2;
         alu_out <= alu_result;
     end
-    
+
     //instantiate all modules 
     pc this_pc(  
         .pc_in(pc_address_in),
-        .pc_write(pc_write),
-        .pc_write_cond(pc_write_cond),
+        .pc_write(pcwrite),
+        .pc_write_cond(pcwritecond),
         .alu_zero(alu_zero),
         .pc_out(pc_next_address)
     ); 
@@ -95,7 +96,7 @@ module mips_cpu_bus(
         .state(state),
         .regdst(regdst),
         .regwrite(regwrite),
-        .iord(i_or_d),
+        .iord(iord),
         .irwrite(ir_write),
         .pcwrite(pcwrite),
         .pcsource(pcsource),
@@ -132,7 +133,7 @@ module mips_cpu_bus(
         .write_data(reg_write_data),
         .read_data_1(read_reg_1),
         .read_data_2(read_reg_2),
-        .read_data_v0(read_reg_v0)
+        .read_data_v0(register_v0)
     );
 
     mips_alu my_alu(
@@ -141,4 +142,5 @@ module mips_cpu_bus(
         .zero(zero), 
         .alu_result(alu_result)
     );
+
 endmodule
