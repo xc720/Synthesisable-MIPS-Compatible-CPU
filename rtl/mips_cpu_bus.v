@@ -27,8 +27,15 @@ module mips_cpu_bus (
   logic [31:0] alu_result, alu_in_a, alu_in_b, alu_out;
   logic zero;
 
+  //variables for alu control
+  logic [4:0] toalu;
+  logic [2:0] tomult;
+
   //variables for A and B registers
   logic [31:0] read_reg_a_current, read_reg_b_current;
+
+  //variables for the mul/div 
+  logic [31:0] hi, lo;
 
   //variables for memory data register
   logic [31:0] mem_reg_current;
@@ -49,7 +56,7 @@ module mips_cpu_bus (
   logic [4:0] reg_write_address;
 
   //variables for control
-  logic pcwritecond, pcwrite, iord, ir_write, regdst, regwrite, alusrca;
+  logic pcwritecond, pcwrite, iord, ir_write, regdst, regwrite, alusrca, muldivwrite;
   logic [1:0] alusrcb, pcsource, memtoreg;
   logic [3:0] aluop;
 
@@ -176,8 +183,22 @@ module mips_cpu_bus (
   );
 
   mips_cpu_alu_control cpu_alu_control (
-      .aluOp(aluop),
-      .funct(fncode),
-      .toalu(toalu)
+      .aluOp (aluop),
+      .funct (fncode),
+      .toAlu (toalu),
+      .toMult(tomult)
   );
+
+  mips_cpu_alu_mult_div cpu_alu_mult_div (
+      .op(tomult),
+      .a(alu_in_a),
+      .b(alu_in_b),
+      .clk(clk),
+      .reset(reset),
+      .write(muldivwrite),
+      .hi(hi),
+      .lo(lo)
+  );
+
+
 endmodule
