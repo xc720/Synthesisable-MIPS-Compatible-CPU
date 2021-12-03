@@ -35,7 +35,7 @@ module mult (
 
   end
 
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin
 
     if (reset) begin
       hi <= 0;
