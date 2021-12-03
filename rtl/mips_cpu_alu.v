@@ -5,7 +5,7 @@ module ALU (
     input logic [31:0] b,
     input logic [4:0] shift,
     output logic [31:0] result,
-    output logic zero
+    output logic condition
 );
 
 
