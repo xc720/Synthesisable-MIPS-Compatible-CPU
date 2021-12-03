@@ -139,7 +139,7 @@ module mips_cpu_controller (
             memtoreg = 0;
             aluop = regimm == 0 ? 7 : 4;
             alusrca = 1;
-            aluscrb = 0;
+            alusrcb = 0;
           end else begin  //BLTZAL, BGEZAL
             regdst = 2;
             regwrite = 1;
@@ -156,7 +156,7 @@ module mips_cpu_controller (
             memtoreg = 0;
             aluop = regimm == 16 ? 7 : 4;
             alusrca = 1;
-            aluscrb = 0;
+            alusrcb = 0;
           end
         end
         6'h2: begin  //J
@@ -175,7 +175,7 @@ module mips_cpu_controller (
           memtoreg = 0;
           aluop = 0;
           alusrca = 0;
-          aluscrb = 0;
+          alusrcb = 0;
         end
         6'h3: begin  //JAL
           regdst = 1;
@@ -211,7 +211,7 @@ module mips_cpu_controller (
           memtoreg = 0;
           aluop = 3;
           alusrca = 1;
-          aluscrb = 0;
+          alusrcb = 0;
         end
         6'h8: begin  //ADDIU
           regdst = 0;
@@ -283,13 +283,9 @@ module mips_cpu_controller (
           memtoreg = 0;
           aluop = 0;
           alusrca = 1;
-          aluscr2 = 2;
+          alusrcb = 2;
         end
 
-
-        default: begin
-          $fatal(1, "opcode not yet implemented");
-        end
       endcase
     end
   end

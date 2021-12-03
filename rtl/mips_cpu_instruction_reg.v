@@ -1,7 +1,7 @@
 module mips_cpu_instruction_reg (
     input logic clk,
     input logic enable,
-    input logic state,
+    input logic [2:0] state,
     /*open the register in right state*/
     input logic [31:0] memory_output,
     /*input instruction from memory*/
@@ -20,7 +20,7 @@ module mips_cpu_instruction_reg (
     /*memory address for J-type instruction*/
     output logic [ 5:0] funct,
     /*function code*/
-    output logic [ 5:0] shamt
+    output logic [ 4:0] shamt
     /*shift for alu*/
 );
 
@@ -40,6 +40,7 @@ module mips_cpu_instruction_reg (
   assign immediate = instruction[15:0];
   assign jmp_address = instruction[25:0];
   assign funct = instruction[5:0];
+  assign shamt = instruction[10:6];
 
 
 endmodule

@@ -1,4 +1,3 @@
-`timescale 1ns / 100ps
 module mips_cpu_register_file (
     // control ports
     input logic clk,
