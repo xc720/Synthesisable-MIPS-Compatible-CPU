@@ -4,7 +4,7 @@ module controler (
     input logic [4:0] regimm,
     input logic [2:0] state,
 
-    output logic regdst,
+    output logic [1:0] regdst,
     output logic regwrite,
     output logic iord,
     output logic irwrite,
@@ -16,7 +16,7 @@ module controler (
     output logic memread,
     output logic memwrite,
     output logic [3:0] byteenable,
-    output logic [1:0] memtoreg,
+    output logic memtoreg,
     output logic [3:0] aluop,
     output logic muldivwrite,
     output logic alusrca,
@@ -122,8 +122,42 @@ module controler (
             alusrcb = 1;
           end
         end
-        6'h1: begin  //REGIMM
-
+        6'h1: begin  //REGIMM     BLTZ, BLTZAL, BGEZ, BGEZAL
+          if (regimm < 2) begin  //BLTZ, BGEZ
+            regwrite = 0;
+            regdst = 0;
+            iord = 0;
+            irwrite = 0;
+            pcwrite = 0;
+            pcsource = 1;
+            pcwritecond = 1;
+            jump = 0;
+            threecycle = 1;
+            memread = 0;
+            memwrite = 0;
+            byteenable = 0;
+            memtoreg = 0;
+            aluop = regimm == 0 ? 7 : 4;
+            alusrca = 1;
+            aluscrb = 0;
+          end else begin  //BLTZAL, BGEZAL
+            regdst = 2;
+            regwrite = 1;
+            iord = 0;
+            irwrite = 0;
+            pcwrite = 0;
+            pcsource = 1;
+            pcwritecond = 1;
+            jump = 0;
+            threecycle = 1;
+            memread = 0;
+            memwrite = 0;
+            byteenable = 0;
+            memtoreg = 0;
+            aluop = regimm == 16 ? 7 : 4;
+            alusrca = 1;
+            aluscrb = 0;
+          end
         end
         6'h2: begin  //J
           regwrite = 0;
