@@ -58,7 +58,17 @@ module mips_cpu_bus (
   logic [4:0] reg_write_address;
 
   //variables for control
-  logic pcwritecond, pcwrite, iord, ir_write, memtoreg, regwrite, alusrca, muldivwrite, threecycle;
+  logic
+      pcwritecond,
+      pcwrite,
+      iord,
+      ir_write,
+      memtoreg,
+      regwrite,
+      alusrca,
+      muldivwrite,
+      threecycle,
+      aluouten;
   logic [1:0] pcsource, regdst;
   logic [2:0] alusrcb;
   logic [3:0] aluop;
@@ -113,10 +123,12 @@ module mips_cpu_bus (
     mem_reg_current <= memreaddata;
     read_reg_a_current <= read_reg_1;
     read_reg_b_current <= read_reg_2;
-    alu_out <= alu_result;
     jumpcondreg <= ((condition & pcwritecond) || jump);
     if ((condition & pcwritecond) || jump) begin
       jumpdestreg <= increment_pc;
+    end
+    if (aluouten) begin
+      alu_out <= alu_result;
     end
   end
 
@@ -149,7 +161,8 @@ module mips_cpu_bus (
       .aluop(aluop),
       .muldivwrite(muldivwrite),
       .alusrcb(alusrcb),
-      .alusrca(alusrca)
+      .alusrca(alusrca),
+      .aluouten(aluouten)
   );
 
   mips_cpu_instruction_reg cpu_instruction_register (
