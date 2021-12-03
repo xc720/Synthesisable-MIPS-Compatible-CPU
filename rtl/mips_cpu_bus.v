@@ -57,8 +57,8 @@ module mips_cpu_bus (
   logic [4:0] reg_write_address;
 
   //variables for control
-  logic pcwritecond, pcwrite, iord, ir_write, regdst, regwrite, alusrca, muldivwrite, threecycle;
-  logic [1:0] pcsource, memtoreg;
+  logic pcwritecond, pcwrite, iord, ir_write, memtoreg, regwrite, alusrca, muldivwrite, threecycle;
+  logic [1:0] pcsource, regdst;
   logic [2:0] alusrcb;
   logic [3:0] aluop;
 
@@ -100,8 +100,8 @@ module mips_cpu_bus (
 
   //implementing all multiplexers
   assign mem_address = iord ? pc_current_address : alu_result;
-  assign reg_write_address = regdst ? reg_source_2 : reg_dest;
-  assign reg_write_data = memtoreg[1] ? pc_current_address : memtoreg[0] ?  mem_reg_current : alu_result;
+  assign reg_write_address = regdest[1] ? 31 : regdst[0] ? reg_source_2 : reg_dest;
+  assign reg_write_data = memtoreg[0] ? mem_reg_current : alu_result;
   assign alu_in_a = alusrca ? pc_current_address : read_reg_a_current;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
   assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_current_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
