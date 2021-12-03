@@ -1,6 +1,7 @@
 module controler (
     input logic [5:0] opcode,
     input logic [5:0] fncode,
+    input logic [4:0] regimm,
     input logic [2:0] state,
 
     output logic regdst,
@@ -120,6 +121,9 @@ module controler (
             alusrca = 0;
             alusrcb = 1;
           end
+        end
+        6'h1: begin  //REGIMM
+
         end
         6'h2: begin  //J
           regwrite = 0;
