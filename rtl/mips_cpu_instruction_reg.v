@@ -1,6 +1,4 @@
-`timescale 1ns / 100ps
-
-module instruction_register (
+module mips_cpu_instruction_reg (
     input logic clk,
     input logic enable,
     input logic state,

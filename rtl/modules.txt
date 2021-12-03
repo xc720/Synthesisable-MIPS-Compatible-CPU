@@ -1,0 +1,9 @@
+mips_cpu_alu.control.v
+mips_cpu_alu_mult_div.v
+mips_cpu_alu.v
+ 
+mips_cpu_bus.v
+mips_cpu_controller.v
+mips_cpu_instruction_reg.v
+mips_cpu_pc.v
+mips_cpu_register_file.v
