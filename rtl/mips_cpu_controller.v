@@ -1,4 +1,4 @@
-module controler (
+module mips_cpu_controller (
     input logic [5:0] opcode,
     input logic [5:0] fncode,
     input logic [4:0] regimm,
@@ -69,7 +69,7 @@ module controler (
     end else begin  //exec1 and exec2
       case (opcode)
         6'h0: begin  //Rtype
-          if (fncode  == 5'h4  || fncode == 5'h6 || fncode == 5'h7 || fncode == 5'h21 || fncode == 5'h23 || fncode == 5'h24 || fncode == 5'h25 || fncode == 5'h26 || fncode == 5'h2a || fncode == 5'h2b) begin  //Arithmetic and logical
+          if (fncode  == 6'h4  || fncode == 6'h6 || fncode == 6'h7 || fncode == 6'h21 || fncode == 6'h23 || fncode == 6'h24 || fncode == 6'h25 || fncode == 6'h26 || fncode == 6'h2a || fncode == 6'h2b) begin  //Arithmetic and logical
             regdst = 1;
             regwrite = 1;
             iord = 0;
@@ -86,7 +86,7 @@ module controler (
             aluop = 2;
             alusrca = 1;
             alusrcb = 0;
-          end else if (fncode == 5'h8) begin  //JR
+          end else if (fncode == 6'h8) begin  //JR
             regdst = 0;
             regwrite = 0;
             iord = 0;
@@ -103,7 +103,7 @@ module controler (
             aluop = 0;
             alusrca = 0;
             alusrcb = 0;
-          end else if (fncode == 5'h9) begin  //JALR
+          end else if (fncode == 6'h9) begin  //JALR
             regdst = 1;
             regwrite = 1;
             iord = 0;

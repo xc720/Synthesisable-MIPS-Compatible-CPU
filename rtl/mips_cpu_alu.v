@@ -1,4 +1,4 @@
-module ALU (
+module mips_cpu_alu (
     //input logic[5:0] opcode,
     input logic [4:0] alu_func,
     input logic [31:0] a,
@@ -38,6 +38,6 @@ module ALU (
   end
 
 
-  assign zero = (result == 0);
+  assign condition = (result == 0);
 
 endmodule

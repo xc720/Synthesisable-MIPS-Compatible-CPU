@@ -1,4 +1,4 @@
-module aluControl (
+module mips_cpu_alu_control (
     input  logic [3:0] aluOp,
     input  logic [5:0] funct,
     output logic [4:0] toAlu,
