@@ -9,7 +9,7 @@ module aluControl(
             4'b0000 : toAlu = 5'b00000; // add
             4'b0001 : toAlu = 5'b00011; // subtract
             4'b0010 : case(funct)
-                        6'b100000 : toAlu = 5'b00000; // add unsigned
+                        6'b100001 : toAlu = 5'b00000; // add unsigned
                         6'b100100 : toAlu = 5'b00001; // AND
                         6'b100101 : toAlu = 5'b00010; // OR
                         6'b101010 : toAlu = 5'b00100; // SLT
@@ -19,8 +19,8 @@ module aluControl(
                         6'b000010 : toAlu = 5'b01000; // SRL
                         6'b000110 : toAlu = 5'b01001; // SRLV
                         6'b000011 : toAlu = 5'b01010; // SRA
-                        6'b000111 : toAlu = 5'b01011; //SRAV
-                        6'b100011 : toAlu = 5'b00011; //SUBU
+                        6'b000111 : toAlu = 5'b01011; // SRAV
+                        6'b100011 : toAlu = 5'b00011; // SUBU
                         6'b100110 : toAlu = 5'b 01100; // XOR
                     endcase
 
@@ -47,6 +47,12 @@ module aluControl(
                 toAlu  = 5'b00000;
                 toMult = 3'b000;
             end
+
+            // for I type instructions
+            4'b1010 : toAlu = 5'b00001; // AND
+            4'b1011 : toAlu = 5'b00010; // OR
+            4'b1100 : toAlu = 5'b 01100; // XOR
+
         endcase
     end
 
