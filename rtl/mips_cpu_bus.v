@@ -49,6 +49,7 @@ module mips_cpu_bus (
   logic [25:0] jmp_address;
   logic [15:0] immediate;
   logic [31:0] sign_extended_immediate;
+  logic [31:0] zero_extended_immediate;
 
   //variables for register file
   logic [4:0] reg_source_1, reg_source_2, reg_dest;
@@ -56,8 +57,9 @@ module mips_cpu_bus (
   logic [4:0] reg_write_address;
 
   //variables for control
-  logic pcwritecond, pcwrite, iord, ir_write, regdst, regwrite, alusrca, muldivwrite;
-  logic [1:0] alusrcb, pcsource, memtoreg;
+  logic pcwritecond, pcwrite, iord, ir_write, regdst, regwrite, alusrca, muldivwrite, threecycle;
+  logic [1:0] pcsource, memtoreg;
+  logic [2:0] alusrcb;
   logic [3:0] aluop;
 
   //variables for state machine
@@ -81,7 +83,7 @@ module mips_cpu_bus (
       state  <= 0;
       active <= 0;
     end else if (!waitrequest) begin
-      if (state == 4) begin
+      if (state == 4 || (state == 3 && threecycle)) begin
         state <= 1;
       end else begin
         state <= state + 1;
@@ -91,6 +93,7 @@ module mips_cpu_bus (
 
   //sign extend immediate
   assign sign_extended_immediate = immediate[15] ? {16'hFFFF, immediate} : {16'h0000, immediate};
+  assign zero_extended_immediate = {16'h0000, immediate};
 
   //assign where to write to memory from
   assign memwritedata = read_reg_b_current;
@@ -100,7 +103,7 @@ module mips_cpu_bus (
   assign reg_write_address = regdst ? reg_source_2 : reg_dest;
   assign reg_write_data = memtoreg[1] ? pc_current_address : memtoreg[0] ?  mem_reg_current : alu_result;
   assign alu_in_a = alusrca ? pc_current_address : read_reg_a_current;
-  assign alu_in_b = alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
+  assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
   assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_current_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
   assign pc_address_in = jumpcondreg ? jumpdestreg : increment_pc;
 
@@ -135,12 +138,14 @@ module mips_cpu_bus (
       .irwrite(ir_write),
       .pcwrite(pcwrite),
       .jump(jump),
+      .threecycle(threecycle),
       .pcsource(pcsource),
       .pcwritecond(pcwritecond),
       .memread(memread),
       .memwrite(memwrite),
       .memtoreg(memtoreg),
       .aluop(aluop),
+      .muldivwrite(muldivwrite),
       .alusrcb(alusrcb),
       .alusrca(alusrca)
   );
