@@ -1,8 +1,7 @@
 module aluControl (
     input  logic [3:0] aluOp,
     input  logic [5:0] funct,
-    output logic [4:0] toAlu,
-    output logic [2:0] toMult
+    output logic [4:0] toAlu
 );
   always_comb begin
     case (aluOp)
@@ -22,7 +21,6 @@ module aluControl (
         6'b000011: toAlu = 5'b01010;  // SRA
         6'b000111: toAlu = 5'b01011;  //SRAV
         6'b100011: toAlu = 5'b00011;  //SUBU
-        6'b100110: toAlu = 5'b01100;  // XOR
       endcase
 
       4'b0011: toAlu = 5'b01100;  //  BEQ
@@ -31,25 +29,7 @@ module aluControl (
       4'b0110: toAlu = 5'b01111;  // BLEZ
       4'b0111: toAlu = 5'b10000;  // BLTZ
       4'b1000: toAlu = 5'b10001;  // BNE
-
-      // MULT, DIV etc.
-      4'b1001:
-      case (funct)
-        6'b011000: toMult = 3'b011;  // MULT
-        6'b011001: toMult = 3'b001;  // MULTU
-        6'b011010: toMult = 3'b010;  // DIV
-        6'b011011: toMult = 3'b000;  // DIVU
-        6'b010001: toMult = 3'b100;  // MTHI
-        6'b010011: toMult = 3'b101;  // MTLO
-        6'b010000: toMult = 3'b110;  // MFHI
-        6'b010010: toMult = 3'b111;  // MFLO
-      endcase
-
-      default: begin
-        toAlu  = 5'b00000;
-        toMult = 3'b000;
-      end
+      default: toAlu = 5'b00000;
     endcase
   end
-
 endmodule
