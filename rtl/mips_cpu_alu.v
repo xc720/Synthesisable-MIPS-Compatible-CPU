@@ -8,6 +8,7 @@ module ALU (
     output logic zero
 );
 
+
   always_comb begin
     case (alu_func)
       5'b00000:
@@ -23,6 +24,7 @@ module ALU (
       5'b01001: result = a >> b;  // SRLV
       5'b01010: result = $signed(a) >>> shift;  // SRA
       5'b01011: result = $signed(a) >>> b;  // SRAV
+      5'b01100: result = a ^ b;  // XOR
 
       //branch conditions
       5'b01100: result = (a == b);  // BEQ
