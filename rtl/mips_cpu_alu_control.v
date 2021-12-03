@@ -1,6 +1,6 @@
 module aluControl (
     input  logic [3:0] aluOp,
-    input  logic [5:0] funct,
+    input  logic [5:0] func,
     output logic [4:0] toAlu,
     output logic [2:0] toMult
 );
@@ -9,7 +9,7 @@ module aluControl (
       4'b0000: toAlu = 5'b00000;  // add
       4'b0001: toAlu = 5'b00011;  // subtract
       4'b0010:
-      case (funct)
+      case (func)
         6'b100000: toAlu = 5'b00000;  // add unsigned
         6'b100100: toAlu = 5'b00001;  // AND
         6'b100101: toAlu = 5'b00010;  // OR
@@ -34,7 +34,7 @@ module aluControl (
 
       // MULT, DIV etc.
       4'b1001:
-      case (funct)
+      case (func)
         6'b011000: toMult = 3'b011;  // MULT
         6'b011001: toMult = 3'b001;  // MULTU
         6'b011010: toMult = 3'b010;  // DIV
