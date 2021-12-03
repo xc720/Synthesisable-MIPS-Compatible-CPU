@@ -60,6 +60,8 @@ always @(posedge clk) begin
                 end
             3'b100: hi <= a; //MTHI
             3'b101: lo <= a; //MTLO
+            3'b110: hi <= hi; //MFHI
+            3'b111: lo <= lo; //MFLO
         endcase;
     end 
 end

@@ -37,8 +37,10 @@ module aluControl(
                         6'b011001 : toMult = 3'b001; // MULTU
                         6'b011010 : toMult = 3'b010; // DIV
                         6'b011011 : toMult = 3'b000; // DIVU
-                        6'b010001 : toMult = 3'b100; //MTHI
-                        6'b010011: toMult = 3'b101; //MTLO
+                        6'b010001 : toMult = 3'b100; // MTHI
+                        6'b010011 : toMult = 3'b101; // MTLO
+                        6'b010000 : toMult = 3'b110; // MFHI
+                        6'b010010 : toMult = 3'b111; // MFLO
                     endcase
         
             default: begin 
