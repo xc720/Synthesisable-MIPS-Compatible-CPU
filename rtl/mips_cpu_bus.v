@@ -25,7 +25,7 @@ module mips_cpu_bus (
 
   //variables for alu (need to add in the alu_control)
   logic [31:0] alu_result, alu_in_a, alu_in_b, alu_out;
-  logic zero;
+  logic condition;
 
   //variables for alu control
   logic [4:0] toalu;
@@ -113,8 +113,8 @@ module mips_cpu_bus (
     read_reg_a_current <= read_reg_1;
     read_reg_b_current <= read_reg_2;
     alu_out <= alu_result;
-    jumpcondreg <= ((zero & pcwritecond) || jump);
-    if ((zero & pcwritecond) || jump) begin
+    jumpcondreg <= ((condition & pcwritecond) || jump);
+    if ((condition & pcwritecond) || jump) begin
       jumpdestreg <= increment_pc;
     end
   end
@@ -184,7 +184,7 @@ module mips_cpu_bus (
       .a(alu_in_a),
       .b(alu_in_b),
       .shift(shift),
-      .zero(zero),
+      .condition(condition),
       .result(alu_result)
   );
 
