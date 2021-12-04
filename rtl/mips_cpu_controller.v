@@ -281,7 +281,7 @@ module mips_cpu_controller (
           alusrcb = 2;
           aluouten = 1;
         end
-        6'h2b: begin  //SW
+        6'h28 || 6'h29 || 6'h2b: begin  //SB, SH, SW //TODO: implement SB, SH
           regdst = 0;
           regwrite = 0;
           iord = 1;
