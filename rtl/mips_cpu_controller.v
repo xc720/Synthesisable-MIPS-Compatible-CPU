@@ -205,7 +205,7 @@ module mips_cpu_controller (
           alusrcb = 1;
           aluouten = 1;
         end
-        6'h4: begin  //BEQ
+        6'h4 || 6'h5 || 6'h6 || 6'h7: begin  //BEQ, BNE, BLEZ, BGTZ
           regwrite = 0;
           regdst = 0;
           iord = 0;
@@ -219,7 +219,7 @@ module mips_cpu_controller (
           memwrite = 0;
           byteenable = 0;
           memtoreg = 0;
-          aluop = 3;
+          aluop = opcode == 6'h4 ? 3 : opcode == 6'h5 ? 8 : opcode == 6'h6 ? 6 : 5;
           alusrca = 1;
           alusrcb = 0;
           aluouten = 1;
