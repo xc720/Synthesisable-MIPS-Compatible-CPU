@@ -1,6 +1,7 @@
-addiu $2 $5 50     #output = 50
+addiu $2 $0 50     #output = 50
 addiu $2 $2 4095
 addiu $2 $2 4095
 addiu $2 $2 4095
 addiu $2 $2 4095
-addiu $2 $2 4095   #putput = 50 + 4095*5
+addiu $2 $2 4095   #output = 50 + 4095*5
+jr $0
