@@ -7,9 +7,11 @@ module ALU(
   input logic[4:0] shift,
   input logic[2:0] mult_op,
   input logic write,
+
   output logic[31:0] hi,
   output logic[31:0] lo,
-  output logic[31:0] result
+  output logic[31:0] result,
+  output logic condition
 );
 
 mult alu_mult(
@@ -58,6 +60,6 @@ always_comb begin
 end
 
 
-assign zero = (result == 0);
+assign condition = (result == 1);
 
 endmodule
