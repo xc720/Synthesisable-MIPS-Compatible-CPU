@@ -1,6 +1,6 @@
 module mips_cpu_pc (
     input logic clk,
-    input logic jmp,
+    input logic pcenable,
     input logic reset,
     input logic [31:0] pcin,
 
@@ -8,14 +8,14 @@ module mips_cpu_pc (
 );
 
 
-  always_ff @(posedge clk) begin
+  always @(posedge clk) begin
 
     if (reset) begin
       pcout <= 32'hBFC00000;
-    end else if (jmp) begin
+    end else if (pcenable) begin
       pcout <= pcin;
     end
-
+    $display("pc = %h", pcout);
   end
 
 endmodule

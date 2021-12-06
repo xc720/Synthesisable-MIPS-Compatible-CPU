@@ -15,17 +15,17 @@ module mips_cpu_avalon_RAM (
 
   logic [31:0] sim_address;
   //simulate address in memory 
-  assign sim_address = ((address - 32'hBFC00000) >> 2) % 4096;
+  assign sim_address = ((address - 32'hBFC00000) % 4096) + 1;
 
   initial begin
 
-    for (int i = 0; i < 4096; i++) begin
+    for (int i = 1; i < 4096; i++) begin
       memory[i] = 0;
     end
 
     if (RAM_INIT_FILE != "") begin
       $display("Loading RAM contents from %s", RAM_INIT_FILE);
-      $readmemh(RAM_INIT_FILE, memory);
+      $readmemh(RAM_INIT_FILE, memory, 0, 7);
     end
   end
 
@@ -43,16 +43,15 @@ module mips_cpu_avalon_RAM (
     waitrequest <= 1;
   end
 
-  always_ff @(posedge clk) begin
+  always @(posedge clk) begin
     if (waitrequest) begin  // if in waitrequest
       if (waitcycle != 0) begin  // check if waitcycle has finihsed
         waitcycle <= waitcycle - 1;
-      end else if (waitcycle == 0) begin
         if (read) begin  // set readdata if requested
-          // $display("Address: %h data: %h", address, memory[address]);
-          readdata <= memory[address];
+          $display("Address: %h data: %h", address, memory[address]);
+          readdata <= memory[sim_address];
         end else if (write) begin  // set write data if requested
-          // $display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);
+          $display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);
           memory[address] <= {
             byteenable[3] ? writedata[31:24] : memory[address][31:24],
             byteenable[2] ? writedata[23:16] : memory[address][23:16],

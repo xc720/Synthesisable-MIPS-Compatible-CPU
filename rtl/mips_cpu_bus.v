@@ -4,6 +4,7 @@ module mips_cpu_bus (
     input logic reset,
     output logic active,
     output logic [31:0] register_v0,
+    output logic [31:0] register[31:0],
     //logic for clk, reset, active, register_v0 not yet implemented
 
     /* Avalon memory mapped bus controller */
@@ -15,9 +16,12 @@ module mips_cpu_bus (
     output logic [3:0] byteenable,
     input logic [31:0] memreaddata
 );
-
+  always @(posedge clk) begin
+    $display("address bus = %h", mem_address);
+    $display("pc value = %h", pc_value);
+  end
   //variables for pc
-  logic [31:0] pc_address_in, pc_current_address;
+  logic [31:0] pc_address_in, pc_value;
 
   //variables for alu (need to add in the alu_control)
   logic [31:0] alu_result, alu_in_a, alu_in_b, alu_out;
@@ -79,18 +83,22 @@ module mips_cpu_bus (
   end
 
   //state machine
-  always_ff @(posedge clk) begin
+  always @(posedge clk) begin
     if (reset) begin
       state  <= 1;
       active <= 1;
-    end else if (pc_current_address == 0 && state != 0) begin
+      $display("reset state = %d", state);
+    end else if (pc_value == 0 && state != 0) begin
       state  <= 0;
       active <= 0;
+      $display("hault state = %d", state);
     end else if (!waitrequest) begin
       if (state == 4 || (state == 3 && threecycle)) begin
         state <= 1;
+        $display("state = %d", state);
       end else begin
         state <= state + 1;
+        $display("state = %d", state);
       end
     end
   end
@@ -103,12 +111,12 @@ module mips_cpu_bus (
   assign memwritedata = read_reg_b_current;
 
   //implementing all multiplexers
-  assign mem_address = iord ? pc_current_address : alu_result;
+  assign mem_address = iord ? alu_result : pc_value;
   assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_source_2 : reg_dest;
   assign reg_write_data = memtoreg ? mem_reg_current : alu_result;
-  assign alu_in_a = alusrca ? pc_current_address : read_reg_a_current;
+  assign alu_in_a = alusrca ? pc_value : read_reg_a_current;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
-  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_current_address[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
+  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
   assign pc_address_in = jumpcondreg ? jumpdestreg : increment_pc;
 
   //implementing all single registers
@@ -127,11 +135,11 @@ module mips_cpu_bus (
 
   //instantiate all modules 
   mips_cpu_pc cpu_pc (
-      .pcin (pc_address_in),
-      .clk  (clk),
+      .pcin(pc_address_in),
+      .clk(clk),
       .reset(reset),
-      .jmp  (pcwrite),
-      .pcout(pc_current_address)
+      .pcenable(pcwrite),
+      .pcout(pc_value)
   );
 
   mips_cpu_controller cpu_control (
@@ -140,6 +148,7 @@ module mips_cpu_bus (
       .memoryadress(alu_result),
       .regimm(reg_source_2),
       .state(state),
+      .waitrequest(waitrequest),
       .regdst(regdst),
       .regwrite(regwrite),
       .iord(iord),
@@ -184,7 +193,8 @@ module mips_cpu_bus (
       .write_data(reg_write_data),
       .read_data_1(read_reg_1),
       .read_data_2(read_reg_2),
-      .read_data_v0(register_v0)
+      .read_data_v0(register_v0),
+      .register(register)
   );
 
   mips_cpu_alu cpu_alu (

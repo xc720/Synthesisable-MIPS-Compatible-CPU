@@ -1,9 +1,10 @@
 module mips_cpu_controller (
-    input logic [ 5:0] opcode,
-    input logic [ 5:0] fncode,
+    input logic [5:0] opcode,
+    input logic [5:0] fncode,
     input logic [31:0] memoryadress,
-    input logic [ 4:0] regimm,
-    input logic [ 2:0] state,
+    input logic [4:0] regimm,
+    input logic [2:0] state,
+    input logic waitrequest,
 
     output logic [1:0] regdst,
     output logic regwrite,
@@ -37,7 +38,7 @@ module mips_cpu_controller (
       regwrite = 0;
       iord = 0;
       irwrite = 1;
-      pcwrite = 1;
+      pcwrite = !waitrequest;
       pcsource = 0;
       pcwritecond = 0;
       jump = 0;

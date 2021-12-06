@@ -11,10 +11,11 @@ module mips_cpu_register_file (
     // dual read output ports & v0 port
     output logic [31:0] read_data_1,
     output logic [31:0] read_data_2,
-    output logic [31:0] read_data_v0
+    output logic [31:0] read_data_v0,
+    output logic [31:0] register[31:0]
 );
   // create 32x32-bit register
-  logic [31:0] register[31:0];
+  // logic [31:0] register[31:0];
 
   // return data
   assign read_data_v0 = register[2];
