@@ -1,4 +1,4 @@
-module aluControl (
+module mips_cpu_alu_control (
     input  logic [3:0] aluOp,
     input  logic [5:0] funct,
     output logic [4:0] toAlu,
@@ -25,7 +25,7 @@ module aluControl (
         6'b100110: toAlu = 5'b01100;  // XOR
       endcase
 
-      4'b0011: toAlu = 5'b01100;  //  BEQ
+      4'b0011: toAlu = 5'b01100;  // BEQ
       4'b0100: toAlu = 5'b01101;  // BGEZ
       4'b0101: toAlu = 5'b01110;  // BGTZ
       4'b0110: toAlu = 5'b01111;  // BLEZ
