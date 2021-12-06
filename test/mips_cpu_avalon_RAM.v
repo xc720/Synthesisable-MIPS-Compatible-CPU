@@ -1,4 +1,4 @@
-module avalon_RAM (
+module mips_cpu_avalon_RAM (
     input logic clk,
     input logic [31:0] address,
     input logic [3:0] byteenable,
@@ -11,16 +11,15 @@ module avalon_RAM (
 );
 
   parameter RAM_INIT_FILE = "";
-  reg [31:0] memory[4095:0];
+  logic [31:0] memory[4095:0];
 
   logic [31:0] sim_address;
   //simulate address in memory 
   assign sim_address = ((address - 32'hBFC00000) >> 2) % 4096;
 
   initial begin
-    integer i;
 
-    for (i = 0; i < 4096; i++) begin
+    for (int i = 0; i < 4096; i++) begin
       memory[i] = 0;
     end
 
