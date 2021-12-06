@@ -1,8 +1,9 @@
 module mips_cpu_controller (
-    input logic [5:0] opcode,
-    input logic [5:0] fncode,
-    input logic [4:0] regimm,
-    input logic [2:0] state,
+    input logic [ 5:0] opcode,
+    input logic [ 5:0] fncode,
+    input logic [31:0] memoryadress,
+    input logic [ 4:0] regimm,
+    input logic [ 2:0] state,
 
     output logic [1:0] regdst,
     output logic regwrite,
@@ -338,7 +339,7 @@ module mips_cpu_controller (
           aluouten = 1;
           muldivwrite = 0;
         end
-        6'h28 || 6'h29 || 6'h2b: begin  //SB, SH, SW //TODO: implement SB, SH
+        6'h28 || 6'h29 || 6'h2b: begin  //SB, SH, SW
           regdst = 0;
           regwrite = 0;
           iord = 1;
@@ -350,7 +351,7 @@ module mips_cpu_controller (
           threecycle = 1;
           memread = 0;
           memwrite = 1;
-          byteenable = 4'b1111;
+          byteenable = opcode == 6'h28 ? 4'b1111 : opcode == 6'h29 ? memoryadress % 4 == 0 ? 4'b0011 : 4'b1100 : 1 << memoryadress % 4 == 0; //TODO:fix when i understand Indians better
           memtoreg = 0;
           aluop = 0;
           alusrca = 1;

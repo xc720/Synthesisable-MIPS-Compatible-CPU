@@ -137,6 +137,7 @@ module mips_cpu_bus (
   mips_cpu_controller cpu_control (
       .opcode(opcode),
       .fncode(fncode),
+      .memoryadress(alu_result),
       .regimm(reg_source_2),
       .state(state),
       .regdst(regdst),
