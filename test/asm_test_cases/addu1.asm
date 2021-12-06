@@ -1,4 +1,4 @@
-addiu $4 $4 4095
-addiu $7 $7 4095
-addu $2 $4 $7 #output = 4095*2
-jr $0
+ADDIU $4 $4 4095
+ADDIU $7 $7 4095
+ADDU $2 $4 $7 #output = 4095*2
+JR $0

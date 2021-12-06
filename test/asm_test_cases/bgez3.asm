@@ -1,5 +1,5 @@
-addiu $3 $3 0
-bgez $3 1
-addiu $4 $4 10
-addiu $4 $4 15
-jr $0   #branch on ; result -> $4 = 15
+ADDIU $3 $3 0
+BGEZ $3 1
+ADDIU $4 $4 10
+ADDIU $4 $4 15
+JR $0   #branch on ; result -> $4 = 15

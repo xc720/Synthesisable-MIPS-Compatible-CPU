@@ -1,5 +1,5 @@
-addiu $4 $4 4
-bgez $4 1
-addiu $4 $4 3
-addiu $4 $4 4
-jr $0   #branch on/ pc = pc + 8; result -> $4 = 8
+ADDIU $4 $4 4
+BGEZ $4 1
+ADDIU $4 $4 3
+ADDIU $4 $4 4
+JR $0   #branch on/ pc = pc + 8; result -> $4 = 8
