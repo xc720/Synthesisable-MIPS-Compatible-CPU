@@ -19,17 +19,17 @@ module mips_cpu_bus_tb;
   logic [31:0] memreaddata;
   logic [31:0] memwritedata;
 
-  /*RAM_avalon #(RAM_INIT_FILE) RAMInst (
+  mips_cpu_avalon_RAM #(RAM_INIT_FILE) RAMInst (
       .clk(clk),
-      .address(address),
+      .address(mem_address),
       .byteenable(byteenable),
-      .memread(memread),
-      .memwrite(memwrite),
+      .read(memread),
+      .write(memwrite),
       .waitrequest(waitrequest),
-      .memreaddata(memreaddata),
-      .memwritedata(memwritedata)
+      .readdata(memreaddata),
+      .writedata(memwritedata)
   );
-  */
+
   mips_cpu_bus cpuBusInst (
       .clk(clk),
       .reset(reset),
