@@ -1,4 +1,4 @@
-module mult (
+module mips_cpu_alu_mult_div (
     input logic [31:0] a,
     b,
     input logic [2:0] op,
@@ -35,7 +35,7 @@ module mult (
 
   end
 
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin
 
     if (reset) begin
       hi <= 0;

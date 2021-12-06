@@ -1,4 +1,4 @@
-module pc (
+module mips_cpu_pc (
     input logic clk,
     input logic jmp,
     input logic reset,

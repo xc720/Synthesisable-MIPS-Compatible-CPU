@@ -1,4 +1,4 @@
-module ALU (
+module mips_cpu_alu (
     //input logic[5:0] opcode,
     input logic clk,
     input logic [4:0] alu_func,
@@ -27,9 +27,11 @@ module ALU (
 
   always_comb begin
 
-    if (mult_op == 3'b111) result = hi;
-    else if (mult_op == 3'b110) result = lo;
-    else begin
+    if (mult_op == 3'b111) begin
+      result = hi;
+    end else if (mult_op == 3'b110) begin
+      result = lo;
+    end else begin
       case (alu_func)
         5'b00000:
         result = $unsigned(a) + $unsigned(b);  // ADDU  (immediate or not determined elsewhere)
