@@ -1,6 +1,6 @@
 module mips_cpu_alu (
-    //input logic[5:0] opcode,
     input logic clk,
+    input logic reset,
     input logic [4:0] alu_func,
     input logic [31:0] a,
     input logic [31:0] b,
@@ -14,7 +14,7 @@ module mips_cpu_alu (
     output logic condition
 );
 
-  mult alu_mult (
+  mips_cpu_alu_mult_div alu_mult (
       .a(a),
       .b(b),
       .op(mult_op),
