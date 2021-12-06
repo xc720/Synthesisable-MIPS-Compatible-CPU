@@ -61,7 +61,6 @@ module mips_cpu_alu (
   end
 
 
-
   assign condition = (result == 1);
 
 endmodule
