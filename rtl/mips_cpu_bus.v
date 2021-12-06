@@ -1,7 +1,3 @@
-//assumed that the gates that feed into the PC are part of the PC module 
-//need to implement updated data path
-//need to get accurate input/output names
-
 module mips_cpu_bus (
     /* Standard signals */
     input logic clk,
@@ -194,10 +190,16 @@ module mips_cpu_bus (
   );
 
   mips_cpu_alu cpu_alu (
+      .clk(clk),
+      .reset(reset),
       .alu_func(toalu),
+      .mult_op(tomult),
       .a(alu_in_a),
       .b(alu_in_b),
       .shift(shift),
+      .write(muldivwrite),
+      .hi(hi),
+      .lo(lo),
       .condition(condition),
       .result(alu_result)
   );
@@ -207,17 +209,6 @@ module mips_cpu_bus (
       .funct (fncode),
       .toAlu (toalu),
       .toMult(tomult)
-  );
-
-  mips_cpu_alu_mult_div cpu_alu_mult_div (
-      .op(tomult),
-      .a(alu_in_a),
-      .b(alu_in_b),
-      .clk(clk),
-      .reset(reset),
-      .write(muldivwrite),
-      .hi(hi),
-      .lo(lo)
   );
 
 
