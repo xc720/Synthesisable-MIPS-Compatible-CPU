@@ -312,7 +312,7 @@ module mips_cpu_controller (
           memwrite = 0;
           byteenable = 0;
           memtoreg = 0;
-          aluop = opcode == 6'ha ? 13 : opcode == 6'hb ? 14 : opcode == 6'hc ? 10 : opcode == 6'hd ? 11 : 12; //TODO: fix aluOP for SLTs when in alucontrol
+          aluop = opcode == 6'ha ? 13 : opcode == 6'hb ? 14 : opcode == 6'hc ? 10 : opcode == 6'hd ? 11 : 12;
           alusrca = 1;
           alusrcb = 4;
           aluouten = 1;
