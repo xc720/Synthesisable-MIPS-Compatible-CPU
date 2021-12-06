@@ -45,15 +45,17 @@ module aluControl (
         6'b010010: toMult = 3'b111;  // MFLO
       endcase
 
+      // for I type instructions
+      4'b1010: toAlu = 5'b00001;  // ANDI
+      4'b1011: toAlu = 5'b00010;  // ORI
+      4'b1100: toAlu = 5'b01100;  // XORI
+      4'b1101: toAlu = 5'b00100;  // SLTI
+      4'b1110: toAlu = 5'b00101;  // SLTUI
+
       default: begin
         toAlu  = 5'b00000;
         toMult = 3'b000;
       end
-
-      // for I type instructions
-      4'b1010: toAlu = 5'b00001;  // AND
-      4'b1011: toAlu = 5'b00010;  // OR
-      4'b1100: toAlu = 5'b01100;  // XOR
 
     endcase
   end
