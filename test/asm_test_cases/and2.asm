@@ -1,6 +1,6 @@
-LUI $4 1024
-ADDIU $4 $4 1024
-LUI $7 1024
-ADDIU $7 $7 4095
-AND $2 $4 $7
+LUI $a0 1024                    #
+ADDIU $a0 $a0 1024              #
+LUI $a1 1024                    #
+ADDIU $a1 $a1 4095              #
+AND $v0 $a0 $a1                 #
 JR $0      #2048 || 5119

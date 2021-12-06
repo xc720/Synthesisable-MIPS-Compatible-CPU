@@ -1,6 +1,6 @@
-ADDIU $3 $3 0
-BGEZAL $3 1
-ADDIU $4 $4 10
-ADDIU $4 $4 15
-JR $0   #branch on ; result -> $4 = 15
+ADDIU $a1 $a1 0         #
+BGEZAL $a1 1            #
+ADDIU $a0 $a0 10        #
+ADDIU $a0 $a0 15        #
+JR $zero   #branch on ; result -> $a0 = 15
         #AND link pc + 4 to $ra

@@ -1,3 +1,3 @@
-ADDIU $4 $4 1024
-ANDI $2 $4 1024
-JR $0      #immediate 1024 || $4(1024)
+ADDIU $a0 $a0 1024                              #
+ANDI $v0 $a0 1024                               #
+JR $zero      #immediate 1024 || $a0(1024)      #

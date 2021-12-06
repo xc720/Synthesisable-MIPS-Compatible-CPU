@@ -1,6 +1,6 @@
-ADDIU $4 $4 4
-ADDIU $5 $5 5
-BEQ   $4 $5 1
-ADDIU $2 $2 2048
-ADDIU $2 $2 1024
-JR $0   #not equal -> result is $2 = 2048
+ADDIU $a0 $a0 4         #
+ADDIU $a1 $a1 5         #
+BEQ   $a0 $a1 1         #
+ADDIU $v0 $v0 2048      #
+ADDIU $v0 $v0 1024      #
+JR $zero   #not equal -> result is $vo = 2048

@@ -1,8 +1,8 @@
-ADDIU $3 $3 6
-ADDIU $5 $5 2
-SUBU  $5 $5 $3   # $5 = -4
-BGEZAL $5 1
-ADDIU $5 $5 4
-ADDIU $5 $5 5
-JR $0   #result -> $5 = 5
+ADDIU $a1 $a1 6     #
+ADDIU $a0 $a0 2     #
+SUBU  $a0 $a0 $a1   # $a0 = -4
+BGEZAL $a0 1        #
+ADDIU $a0 $a0 4     #
+ADDIU $a0 $a0 5     #
+JR $zero   #result -> $a0 = 5
         #AND link $ra = current pc + 4
