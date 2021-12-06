@@ -1,7 +1,3 @@
-//assumed that the gates that feed into the PC are part of the PC module 
-//need to implement updated data path
-//need to get accurate input/output names
-
 module mips_cpu_bus (
     /* Standard signals */
     input logic clk,
