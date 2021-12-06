@@ -30,9 +30,6 @@ module mips_cpu_bus (
   //variables for A and B registers
   logic [31:0] read_reg_a_current, read_reg_b_current;
 
-  //variables for the mul/div 
-  logic [31:0] hi, lo;
-
   //variables for memory data register
   logic [31:0] mem_reg_current;
 
@@ -198,8 +195,6 @@ module mips_cpu_bus (
       .b(alu_in_b),
       .shift(shift),
       .write(muldivwrite),
-      .hi(hi),
-      .lo(lo),
       .condition(condition),
       .result(alu_result)
   );

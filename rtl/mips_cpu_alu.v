@@ -8,11 +8,11 @@ module mips_cpu_alu (
     input logic [2:0] mult_op,
     input logic write,
 
-    output logic [31:0] hi,
-    output logic [31:0] lo,
     output logic [31:0] result,
     output logic condition
 );
+
+  logic [31:0] hi, lo;
 
   mips_cpu_alu_mult_div alu_mult (
       .a(a),
