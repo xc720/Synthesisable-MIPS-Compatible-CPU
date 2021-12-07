@@ -75,11 +75,16 @@ module mips_cpu_bus_tb;
     assert (active == 1)
     else $display("TB: CPU did not set active=1 after reset.");
 
-    #1500;
+    forever begin
+      @(posedge clk);
+      if (!active) begin
+        #20;
+        $display("CPU HALUTED, register_v0 = %d", register_v0);
+
+        $finish;
+      end
+    end
 
 
-    $display("TB: INFO: register_v0 = %d", register_v0);
-
-    $finish;
   end
 endmodule

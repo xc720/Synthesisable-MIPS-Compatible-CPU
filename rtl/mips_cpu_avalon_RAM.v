@@ -43,12 +43,12 @@ module mips_cpu_avalon_RAM (
     waitrequest <= 1;
   end
 
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin
     if (waitrequest) begin  // if in waitrequest
       if (waitcycle != 0) begin  // check if waitcycle has finihsed
         waitcycle <= waitcycle - 1;
         if (read) begin  // set readdata if requested
-          $display("Address: %h data: %h", address, memory[address]);
+          $display("Address: %h data: %h", address, memory[sim_address]);
           readdata <= memory[sim_address];
         end else if (write) begin  // set write data if requested
           $display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);

@@ -16,10 +16,7 @@ module mips_cpu_bus (
     output logic [3:0] byteenable,
     input logic [31:0] memreaddata
 );
-  always @(posedge clk) begin
-    $display("address bus = %h", mem_address);
-    $display("pc value = %h", pc_value);
-  end
+
   //variables for pc
   logic [31:0] pc_address_in, pc_value;
 
@@ -64,7 +61,7 @@ module mips_cpu_bus (
       regwrite,
       alusrca,
       muldivwrite,
-      threecycle,
+      threestate,
       aluouten,
       jump,
       jumpconen;
@@ -86,22 +83,18 @@ module mips_cpu_bus (
   end
 
   //state machine
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin
     if (reset) begin
       state  <= 1;
       active <= 1;
-      $display("reset state = %d", state);
-    end else if (pc_value == 0 && (state == 4 || (state == 3 && threecycle))) begin
+    end else if (pc_value == 0 && (state == 4 || (state == 3 && threestate))) begin
       state  <= 0;
       active <= 0;
-      $display("hault state = %d", state);
     end else if (!waitrequest) begin
-      if (state == 4 || (state == 3 && threecycle)) begin
+      if (state == 4 || (state == 3 && threestate)) begin
         state <= 1;
-        $display("state = %d", state);
       end else if (!state == 0) begin
         state <= state + 1;
-        $display("state = %d", state);
       end
     end
   end
@@ -161,7 +154,7 @@ module mips_cpu_bus (
       .pcwrite(pcwrite),
       .jump(jump),
       .jumpconen(jumpconen),
-      .threecycle(threecycle),
+      .threestate(threestate),
       .pcsource(pcsource),
       .pcwritecond(pcwritecond),
       .memread(memread),
@@ -192,6 +185,8 @@ module mips_cpu_bus (
   mips_cpu_register_file cpu_register_file (
       .clk(clk),
       .reset(reset),
+      .state(state),
+      .threestate(threestate),
       .write_enable(regwrite),
       .read_reg_1(reg_source_1),
       .read_reg_2(reg_source_2),

@@ -3,6 +3,8 @@ module mips_cpu_register_file (
     input logic clk,
     input logic reset,
     input logic write_enable,
+    input logic [2:0] state,
+    input logic threestate,
     // dual input read ports & write input ports
     input logic [4:0] read_reg_1,
     input logic [4:0] read_reg_2,
@@ -23,7 +25,7 @@ module mips_cpu_register_file (
   assign read_data_2  = register[read_reg_2];
 
   // reset & write
-  always @(posedge clk) begin
+  always_ff @(posedge clk) begin  //TODO: remove dispays and state as an input when done testing
     // reset register
     if (reset) begin
       for (int i = 0; i < 32; i++) begin
@@ -32,13 +34,13 @@ module mips_cpu_register_file (
     end else begin
       // write to register
       if (write_enable && write_reg != 0) begin
-        $display("writing");
-        $display("reg = %d", write_reg);
-        $display("reg = %d", write_data);
         register[write_reg] <= write_data;
       end
-      for (int i = 0; i < 32; ++i) begin
-        $display("TB: INFO: register_v", i, " = %d", register[i]);
+      if (state == 1 || state == 0) begin
+        for (int i = 0; i < 32; ++i) begin
+          $display("register", i, " = %d", register[i]);
+        end
+        $display("\nnext cycle\n");
       end
     end
   end

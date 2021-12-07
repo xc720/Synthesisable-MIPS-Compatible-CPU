@@ -15,7 +15,7 @@ module mips_cpu_controller (
     output logic pcwritecond,
     output logic jump,
     output logic jumpconen,
-    output logic threecycle,
+    output logic threestate,
     output logic memread,
     output logic memwrite,
     output logic [3:0] byteenable,
@@ -44,7 +44,7 @@ module mips_cpu_controller (
       pcwritecond = 0;
       jump = 0;
       jumpconen = 0;
-      threecycle = 0;
+      threestate = 0;
       memread = 0;
       memwrite = 0;
       byteenable = 0;
@@ -64,7 +64,7 @@ module mips_cpu_controller (
       pcwritecond = 0;
       jump = 0;
       jumpconen = !waitrequest;
-      threecycle = 0;
+      threestate = 0;
       memread = 1;
       memwrite = 0;
       byteenable = 0;
@@ -84,7 +84,7 @@ module mips_cpu_controller (
       pcsource = 0;
       pcwritecond = 0;
       jump = 0;
-      threecycle = 0;
+      threestate = 0;
       memread = 0;
       memwrite = 0;
       byteenable = 0;
@@ -108,7 +108,7 @@ module mips_cpu_controller (
               pcsource = 0;
               pcwritecond = 0;
               jump = 0;
-              threecycle = 1;
+              threestate = 1;
               memread = 0;
               memwrite = 0;
               byteenable = 0;
@@ -128,7 +128,7 @@ module mips_cpu_controller (
               pcsource = 3;
               pcwritecond = 0;
               jump = 1;
-              threecycle = 1;
+              threestate = 1;
               memread = 0;
               memwrite = 0;
               byteenable = 0;
@@ -148,7 +148,7 @@ module mips_cpu_controller (
               pcsource = 3;
               pcwritecond = 0;
               jump = 1;
-              threecycle = 1;
+              threestate = 1;
               memread = 0;
               memwrite = 0;
               byteenable = 0;
@@ -168,7 +168,7 @@ module mips_cpu_controller (
               pcsource = 0;
               pcwritecond = 0;
               jump = 0;
-              threecycle = 1;
+              threestate = 1;
               memread = 0;
               memwrite = 0;
               byteenable = 0;
@@ -188,7 +188,7 @@ module mips_cpu_controller (
               pcsource = 0;
               pcwritecond = 0;
               jump = 0;
-              threecycle = 1;
+              threestate = 1;
               memread = 0;
               memwrite = 0;
               byteenable = 0;
@@ -211,7 +211,7 @@ module mips_cpu_controller (
             pcsource = 1;
             pcwritecond = 1;
             jump = 0;
-            threecycle = 1;
+            threestate = 1;
             memread = 0;
             memwrite = 0;
             byteenable = 0;
@@ -230,7 +230,7 @@ module mips_cpu_controller (
             pcsource = 1;
             pcwritecond = exec2;
             jump = 0;
-            threecycle = 0;
+            threestate = 0;
             memread = 0;
             memwrite = 0;
             byteenable = 0;
@@ -251,7 +251,7 @@ module mips_cpu_controller (
           pcsource = 2;
           pcwritecond = 0;
           jump = 1;
-          threecycle = 1;
+          threestate = 1;
           memread = 0;
           memwrite = 0;
           byteenable = 0;
@@ -271,7 +271,7 @@ module mips_cpu_controller (
           pcsource = 2;
           pcwritecond = 0;
           jump = 1;
-          threecycle = 1;
+          threestate = 1;
           memread = 0;
           memwrite = 0;
           byteenable = 0;
@@ -291,7 +291,7 @@ module mips_cpu_controller (
           pcsource = 1;
           pcwritecond = 1;
           jump = 0;
-          threecycle = 1;
+          threestate = 1;
           memread = 0;
           memwrite = 0;
           byteenable = 0;
@@ -311,7 +311,7 @@ module mips_cpu_controller (
           pcsource = 0;
           pcwritecond = 0;
           jump = 0;
-          threecycle = 1;
+          threestate = 1;
           memread = 0;
           memwrite = 0;
           byteenable = 0;
@@ -331,7 +331,7 @@ module mips_cpu_controller (
           pcsource = 0;
           pcwritecond = 0;
           jump = 0;
-          threecycle = 1;
+          threestate = 1;
           memread = 0;
           memwrite = 0;
           byteenable = 0;
@@ -351,7 +351,7 @@ module mips_cpu_controller (
           pcsource = 0;
           pcwritecond = 0;
           jump = 0;
-          threecycle = 0;
+          threestate = 0;
           memread = exec1;
           memwrite = 0;
           byteenable = 0;
@@ -371,7 +371,7 @@ module mips_cpu_controller (
           pcsource = 0;
           pcwritecond = 0;
           jump = 0;
-          threecycle = 1;
+          threestate = 1;
           memread = 0;
           memwrite = 1;
           byteenable = opcode == 6'h28 ? 4'b1111 : opcode == 6'h29 ? memoryadress % 4 == 0 ? 4'b0011 : 4'b1100 : 1 << memoryadress % 4 == 0; //TODO:fix when i understand Indians better
