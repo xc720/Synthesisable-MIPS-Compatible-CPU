@@ -14,6 +14,7 @@ module mips_cpu_controller (
     output logic [1:0] pcsource,
     output logic pcwritecond,
     output logic jump,
+    output logic jumpconen,
     output logic threecycle,
     output logic memread,
     output logic memwrite,
@@ -33,7 +34,27 @@ module mips_cpu_controller (
     exec1 = (state == 3);
     exec2 = (state == 4);
 
-    if (state == 1) begin  //fetch
+    if (state == 0) begin  //haulted
+      regdst = 0;
+      regwrite = 0;
+      iord = 0;
+      irwrite = 0;
+      pcwrite = 0;
+      pcsource = 0;
+      pcwritecond = 0;
+      jump = 0;
+      jumpconen = 0;
+      threecycle = 0;
+      memread = 0;
+      memwrite = 0;
+      byteenable = 0;
+      memtoreg = 0;
+      aluop = 0;
+      alusrca = 0;
+      alusrcb = 0;
+      aluouten = 0;
+      muldivwrite = 0;
+    end else if (state == 1) begin  //fetch
       regdst = 0;
       regwrite = 0;
       iord = 0;
@@ -42,6 +63,7 @@ module mips_cpu_controller (
       pcsource = 0;
       pcwritecond = 0;
       jump = 0;
+      jumpconen = !waitrequest;
       threecycle = 0;
       memread = 1;
       memwrite = 0;

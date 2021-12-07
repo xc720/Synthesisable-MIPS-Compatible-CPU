@@ -38,8 +38,8 @@ module mips_cpu_bus (
   logic [31:0] mem_reg_current;
 
   //variables for jumps and branching
-  logic jump;
-  logic [31:0] jumpdestreg, jumpcondreg, increment_pc;
+  logic jumpcondreg;
+  logic [31:0] jumpdestreg, increment_pc;
 
   //variables for ir
   logic [4:0] shift;
@@ -65,7 +65,10 @@ module mips_cpu_bus (
       alusrca,
       muldivwrite,
       threecycle,
-      aluouten;
+      aluouten,
+      jump,
+      jumpconen;
+
   logic [1:0] pcsource, regdst;
   logic [2:0] alusrcb;
   logic [3:0] aluop;
@@ -88,7 +91,7 @@ module mips_cpu_bus (
       state  <= 1;
       active <= 1;
       $display("reset state = %d", state);
-    end else if (pc_value == 0 && state != 0) begin
+    end else if (pc_value == 0 && (state == 4 || (state == 3 && threecycle))) begin
       state  <= 0;
       active <= 0;
       $display("hault state = %d", state);
@@ -96,7 +99,7 @@ module mips_cpu_bus (
       if (state == 4 || (state == 3 && threecycle)) begin
         state <= 1;
         $display("state = %d", state);
-      end else begin
+      end else if (!state == 0) begin
         state <= state + 1;
         $display("state = %d", state);
       end
@@ -124,7 +127,9 @@ module mips_cpu_bus (
     mem_reg_current <= memreaddata;
     read_reg_a_current <= read_reg_1;
     read_reg_b_current <= read_reg_2;
-    jumpcondreg <= ((condition & pcwritecond) || jump);
+    if (jumpconen) begin
+      jumpcondreg <= ((condition & pcwritecond) || jump);
+    end
     if ((condition & pcwritecond) || jump) begin
       jumpdestreg <= increment_pc;
     end
@@ -155,6 +160,7 @@ module mips_cpu_bus (
       .irwrite(ir_write),
       .pcwrite(pcwrite),
       .jump(jump),
+      .jumpconen(jumpconen),
       .threecycle(threecycle),
       .pcsource(pcsource),
       .pcwritecond(pcwritecond),
