@@ -3,6 +3,7 @@ module mips_cpu_bus_tb;
 
   parameter RAM_INIT_FILE = "as.dump";
   parameter TIMEOUT_CYCLES = 10000;
+  int resultfile;
 
   logic clk;
   logic reset;
@@ -49,6 +50,7 @@ module mips_cpu_bus_tb;
   // generate clock
   initial begin
     // $timeformat(-9, 1, " ns", 20);
+    resultfile = $fopen("./result.txt", "w");
     $dumpfile("mips_cpu_bus_tb.vcd");
     $dumpvars(0, mips_cpu_bus_tb);
     clk = 0;
@@ -80,6 +82,9 @@ module mips_cpu_bus_tb;
       if (!active) begin
         #20;
         $display("CPU HALUTED, register_v0 = %d", register_v0);
+        $fwrite(resultfile, register_v0);
+        $fclose(resultfile);
+
 
         $finish;
       end

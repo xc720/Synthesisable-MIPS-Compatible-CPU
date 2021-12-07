@@ -19,13 +19,13 @@ module mips_cpu_avalon_RAM (
 
   initial begin
 
-    for (int i = 1; i < 4096; i++) begin
+    for (int i = 0; i < 4096; i++) begin
       memory[i] = 0;
     end
 
     if (RAM_INIT_FILE != "") begin
       $display("Loading RAM contents from %s", RAM_INIT_FILE);
-      $readmemh(RAM_INIT_FILE, memory, 1, 8);
+      $readmemh(RAM_INIT_FILE, memory, 1);
     end
   end
 
