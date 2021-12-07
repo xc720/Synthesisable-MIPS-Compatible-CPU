@@ -75,18 +75,8 @@ module mips_cpu_bus_tb;
     assert (active == 1)
     else $display("TB: CPU did not set active=1 after reset.");
 
-    #150;
+    #1500;
 
-
-
-
-
-
-
-
-    for (int i = 0; i < 32; ++i) begin
-      $display("TB: INFO: register_v", i, " = %d", register_v0);
-    end
 
     $display("TB: INFO: register_v0 = %d", register_v0);
 

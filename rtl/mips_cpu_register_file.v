@@ -36,6 +36,9 @@ module mips_cpu_register_file (
         $display("reg = %d", write_reg);
         $display("reg = %d", write_data);
         register[write_reg] <= write_data;
+        for (int i = 0; i < 32; ++i) begin
+          $display("TB: INFO: register_v", i, " = %d", register[i]);
+        end
       end
     end
   end

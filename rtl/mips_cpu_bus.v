@@ -114,7 +114,7 @@ module mips_cpu_bus (
   assign mem_address = iord ? alu_result : pc_value;
   assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_dest : reg_source_2;
   assign reg_write_data = memtoreg ? mem_reg_current : alu_result;
-  assign alu_in_a = alusrca ? pc_value : read_reg_a_current;
+  assign alu_in_a = alusrca ? read_reg_a_current : pc_value;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
   assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
   assign pc_address_in = jumpcondreg ? jumpdestreg : increment_pc;
