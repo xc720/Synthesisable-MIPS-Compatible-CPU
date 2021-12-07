@@ -112,7 +112,7 @@ module mips_cpu_bus (
 
   //implementing all multiplexers
   assign mem_address = iord ? alu_result : pc_value;
-  assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_source_2 : reg_dest;
+  assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_dest : reg_source_2;
   assign reg_write_data = memtoreg ? mem_reg_current : alu_result;
   assign alu_in_a = alusrca ? pc_value : read_reg_a_current;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);

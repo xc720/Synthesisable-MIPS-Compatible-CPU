@@ -280,7 +280,7 @@ module mips_cpu_controller (
           aluouten = 1;
           muldivwrite = 0;
         end
-        6'h8: begin  //ADDIU
+        6'h9: begin  //ADDIU
           regdst = 0;
           regwrite = 1;
           iord = 0;

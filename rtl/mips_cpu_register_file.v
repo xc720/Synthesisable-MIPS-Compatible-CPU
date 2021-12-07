@@ -23,13 +23,18 @@ module mips_cpu_register_file (
   assign read_data_2  = register[read_reg_2];
 
   // reset & write
-  always_ff @(posedge clk) begin
+  always @(posedge clk) begin
     // reset register
     if (reset) begin
-      for (int i = 0; i < 32; i++) register[i] <= 0;
+      for (int i = 0; i < 32; i++) begin
+        register[i] <= 0;
+      end
     end else begin
       // write to register
       if (write_enable && write_reg != 0) begin
+        $display("writing");
+        $display("reg = %d", write_reg);
+        $display("reg = %d", write_data);
         register[write_reg] <= write_data;
       end
     end
