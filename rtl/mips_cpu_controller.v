@@ -18,6 +18,7 @@ module mips_cpu_controller (
     output logic threestate,
     output logic memread,
     output logic memwrite,
+    output logic [1:0] shiftwrite,
     output logic [3:0] byteenable,
     output logic memtoreg,
     output logic [3:0] aluop,
@@ -374,7 +375,8 @@ module mips_cpu_controller (
           threestate = 1;
           memread = 0;
           memwrite = 1;
-          byteenable = opcode == 6'h28 ? 4'b1111 : opcode == 6'h29 ? memoryadress % 4 == 0 ? 4'b0011 : 4'b1100 : 1 << memoryadress % 4 == 0; //TODO:fix when i understand Indians better
+          shiftwrite = opcode == 6'h2b ? 0 : opcode == 6'h29 ? memoryadress % 4 == 0 ? 16 : 0 : memoryadress % 4 == 0 ? 3 : memoryadress % 4 == 1 ? 2 : memoryadress % 4 == 2 ? 1 : 0;
+          byteenable = opcode == 6'h2b ? 4'b1111 : opcode == 6'h29 ? memoryadress % 4 == 0 ? 4'b1100 : 4'b0011 : memoryadress % 4 == 0 ? 4'b1000 : memoryadress % 4 == 1 ? 4'b0100 : memoryadress % 4 == 2 ? 4'b0010 : 4'b0001; //TODO:fix when i understand Indians better
           memtoreg = 0;
           aluop = 0;
           alusrca = 1;

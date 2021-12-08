@@ -6,6 +6,7 @@ blue=`tput setaf 4`
 magenta=`tput setaf 5`
 reset=`tput sgr0`
 mkdir ./testbench_and_RAM/compiled_results
+mkdir ./assembler/hexadecimal
 cd assembler/assembly
 echo
 echo -e "${magenta}INSTRUCTION TESTING"
