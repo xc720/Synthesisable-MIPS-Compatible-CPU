@@ -8,27 +8,26 @@ module mips_cpu_bus_tb;
   logic reset;
   logic active;
 
-  logic memread;
-  logic memwrite;
+  logic read;
+  logic write;
   logic waitrequest;
 
   logic [3:0] byteenable;
 
   logic [31:0] register_v0;
-  logic [31:0] mem_address;
-  logic [31:0] memreaddata;
-  logic [31:0] memwritedata;
-  logic [31:0] register[31:0];
+  logic [31:0] address;
+  logic [31:0] readdata;
+  logic [31:0] writedata;
 
   mips_cpu_avalon_RAM #(RAM_INIT_FILE) RAMInst (
       .clk(clk),
-      .address(mem_address),
+      .address(address),
       .byteenable(byteenable),
-      .read(memread),
-      .write(memwrite),
+      .read(read),
+      .write(write),
       .waitrequest(waitrequest),
-      .readdata(memreaddata),
-      .writedata(memwritedata)
+      .readdata(readdata),
+      .writedata(writedata)
   );
 
   mips_cpu_bus cpuBusInst (
@@ -36,14 +35,13 @@ module mips_cpu_bus_tb;
       .reset(reset),
       .active(active),
       .register_v0(register_v0),
-      .mem_address(mem_address),
-      .memwrite(memwrite),
-      .memread(memread),
+      .address(address),
+      .write(write),
+      .read(read),
       .waitrequest(waitrequest),
-      .memwritedata(memwritedata),
+      .writedata(writedata),
       .byteenable(byteenable),
-      .memreaddata(memreaddata),
-      .register(register)
+      .readdata(readdata)
   );
 
   // generate clock
