@@ -1,7 +1,6 @@
 module mips_cpu_bus_tb;
   //timeunit 1ns / 10ps;
-
-  parameter RAM_INIT_FILE = "as.dump";
+  parameter RAM_INIT_FILE = "";
   parameter TIMEOUT_CYCLES = 10000;
   int resultfile;
 
@@ -50,7 +49,7 @@ module mips_cpu_bus_tb;
   // generate clock
   initial begin
     // $timeformat(-9, 1, " ns", 20);
-    resultfile = $fopen("./result.txt", "w");
+    resultfile = $fopen("./compiled_results/result.txt", "w");
     $dumpfile("mips_cpu_bus_tb.vcd");
     $dumpvars(0, mips_cpu_bus_tb);
     clk = 0;
@@ -73,23 +72,19 @@ module mips_cpu_bus_tb;
     reset <= 0;
 
     @(posedge clk);
-    $display("address = %h", mem_address);
+    //$display("address = %h", mem_address);
     assert (active == 1)
     else $display("TB: CPU did not set active=1 after reset.");
-
+    
     forever begin
       @(posedge clk);
       if (!active) begin
         #20;
-        $display("CPU HALUTED, register_v0 = %d", register_v0);
+        //$display("CPU HALUTED, register_v0 = %d", register_v0);
         $fwrite(resultfile, register_v0);
         $fclose(resultfile);
-
-
         $finish;
       end
     end
-
-
   end
 endmodule

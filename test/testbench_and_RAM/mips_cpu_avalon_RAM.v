@@ -24,7 +24,7 @@ module mips_cpu_avalon_RAM (
     end
 
     if (RAM_INIT_FILE != "") begin
-      $display("Loading RAM contents from %s", RAM_INIT_FILE);
+      //$display("Loading RAM contents from %s", RAM_INIT_FILE);
       $readmemh(RAM_INIT_FILE, memory, 1);
     end
   end
@@ -48,10 +48,10 @@ module mips_cpu_avalon_RAM (
       if (waitcycle != 0) begin  // check if waitcycle has finihsed
         waitcycle <= waitcycle - 1;
         if (read) begin  // set readdata if requested
-          $display("Address: %h data: %h", address, memory[sim_address]);
+          //$display("Address: %h data: %h", address, memory[sim_address]);
           readdata <= memory[sim_address];
         end else if (write) begin  // set write data if requested
-          $display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);
+          //$display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);
           memory[address] <= {
             byteenable[3] ? writedata[31:24] : memory[address][31:24],
             byteenable[2] ? writedata[23:16] : memory[address][23:16],
