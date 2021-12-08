@@ -18,9 +18,8 @@ module avalon_RAM (
   assign sim_address = ((address - 32'hBFC00000) >> 2) % 4096;
 
   initial begin
-    integer i;
 
-    for (i = 0; i < 4096; i++) begin
+    for (int i = 0; i < 4096; i++) begin
       memory[i] = 0;
     end
 
@@ -30,13 +29,13 @@ module avalon_RAM (
     end
   end
 
-  integer waitcycle;
+  integer waittime;
   // initialise registers
   initial begin
     waitrequest = 0;
     readdata = 0;
 
-    waitcycle = $urandom_range(0, 5);
+    waittime = $urandom_range(0, 5);
   end
 
   //start wait request if reading or writing
@@ -46,26 +45,25 @@ module avalon_RAM (
 
   always_ff @(posedge clk) begin
     if (waitrequest) begin  // if in waitrequest
-      if (waitcycle != 0) begin  // check if waitcycle has finihsed
-        waitcycle <= waitcycle - 1;
-      end else if (waitcycle == 0) begin
-        if (read) begin  // set readdata if requested
-          // $display("Address: %h data: %h", address, memory[address]);
-          readdata <= memory[address];
-        end else if (write) begin  // set write data if requested
-          // $display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);
-          memory[address] <= {
-            byteenable[3] ? writedata[31:24] : memory[address][31:24],
-            byteenable[2] ? writedata[23:16] : memory[address][23:16],
-            byteenable[1] ? writedata[15:8] : memory[address][15:8],
-            byteenable[0] ? writedata[7:0] : memory[address][7:0]
-          };
+      if (waittime > 0) begin
+        waittime <= waittime - 1;
+      end else begin
+        if (read) begin
+          readdata <= memory[sim_address];
+        end else if (write) begin
+          memory[sim_address][31:24] <= (byteenable[3] ? writedata[31:24] : memory[sim_address][31:24]);
+          memory[sim_address][23:16] <= (byteenable[2] ? writedata[23:16] : memory[sim_address][23:16]);
+          memory[sim_address][15:8] <= (byteenable[1] ? writedata[15:8] : memory[sim_address][15:8]);
+          memory[sim_address][7:0] <= (byteenable[0] ? writedata[7:0] : memory[sim_address][7:0]);
         end
-        waitcycle <= 1;//$urandom_range(0,5); // reset reandom wait time (this can be set to a constant, random can be useful for testing)
-        waitrequest <= 0;  // reset wait request
+        waittime <= 1;
+        waitrequest <= 0;
       end
+      waitcycle   <= 1;  // $urandom_range(0,5); 
+      waitrequest <= 0;  // reset wait request
     end
   end
+
 
 
 
