@@ -26,17 +26,17 @@ initial begin
 
     if (RAM_INIT_FILE != "") begin
         $display("Loading RAM contents from %s", RAM_INIT_FILE);
-        $readmemh(RAM_INIT_FILE, memory);
+        $readmemh(RAM_INIT_FILE, memory, 1);
     end
 end
 
-integer waitcycle;
+integer waittime;
 // initialise registers
 initial begin
     waitrequest = 0;
     readdata = 0;
 
-    waitcycle = $urandom_range(0,5);
+    waittime = $urandom_range(0,5);
 end
 
 //start wait request if reading or writing
@@ -46,25 +46,20 @@ end
 
 always_ff @(posedge clk) begin
     if(waitrequest) begin // if in waitrequest
-        if(waitcycle != 0) begin // check if waitcycle has finihsed
-            waitcycle <= waitcycle - 1;
-        end
-        else if(waitcycle == 0) begin
-            if(read) begin // set readdata if requested
-                // $display("Address: %h data: %h", address, memory[address]);
-                readdata <= memory[address];
+        if (waittime > 0) begin
+            waittime <= waittime - 1;
+        end else begin
+            if (read) begin
+                readdata <= memory[sim_address];
+            end else
+            if (write) begin
+                memory[sim_address][31:24] <= (byteenable[3] ? writedata[31:24] : memory[sim_address][31:24]);
+                memory[sim_address][23:16] <= (byteenable[2] ? writedata[23:16] : memory[sim_address][23:16]);
+                memory[sim_address][15:8] <= (byteenable[1] ? writedata[15:8] : memory[sim_address][15:8]);
+                memory[sim_address][7:0] <= (byteenable[0] ? writedata[7:0] : memory[sim_address][7:0]);
             end
-            else if(write) begin // set write data if requested
-                // $display("Bytenable: %b address: %h data: %h", byteenable, address, writedata);
-                memory[address] <= {
-                    byteenable[3] ? writedata[31:24] : memory[address][31:24],
-                    byteenable[2] ? writedata[23:16] : memory[address][23:16],
-                    byteenable[1] ? writedata[15:8] : memory[address][15:8],
-                    byteenable[0] ? writedata[7:0] : memory[address][7:0]
-                };
-            end
-            waitcycle <= 1;//$urandom_range(0,5); // reset reandom wait time (this can be set to a constant, random can be useful for testing)
-            waitrequest <= 0; // reset wait request
+            waittime <= 1;
+            waitrequest <= 0;
         end
     end
 end
