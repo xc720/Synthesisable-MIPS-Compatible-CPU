@@ -15,7 +15,7 @@ module mips_cpu_avalon_RAM (
 
   logic [31:0] sim_address;
   //simulate address in memory 
-  assign sim_address = ((address - 32'hBFC00000 >> 2) % 4096) + 1;
+  assign sim_address = ((address - 32'hBFC00000 >> 2) % 4096);
 
   initial begin
 
@@ -25,7 +25,7 @@ module mips_cpu_avalon_RAM (
 
     if (RAM_INIT_FILE != "") begin
       //$display("Loading RAM contents from %s", RAM_INIT_FILE);
-      $readmemh(RAM_INIT_FILE, memory, 1);
+      $readmemh(RAM_INIT_FILE, memory);
     end
   end
 
