@@ -64,7 +64,7 @@ module mips_cpu_bus (
       jump,
       jumpconen;
 
-  logic [1:0] pcsource, regdst;
+  logic [1:0] pcsource, regdst, shiftwrite;
   logic [2:0] alusrcb;
   logic [3:0] aluop;
 
@@ -102,7 +102,7 @@ module mips_cpu_bus (
   assign zero_extended_immediate = {16'h0000, immediate};
 
   //assign where to write to memory from
-  assign writedata = read_reg_b_current;
+  assign writedata = shiftwrite == 3 ? read_reg_b_current << 24 : shiftwrite == 2 ? read_reg_b_current << 16 : shiftwrite == 1 ? read_reg_b_current << 8 : read_reg_b_current;
 
   //implementing all multiplexers
   assign address = iord ? alu_result : pc_value;
@@ -157,6 +157,8 @@ module mips_cpu_bus (
       .pcwritecond(pcwritecond),
       .memread(read),
       .memwrite(write),
+      .shiftwrite(shiftwrite),
+      .byteenable(byteenable),
       .memtoreg(memtoreg),
       .aluop(aluop),
       .muldivwrite(muldivwrite),

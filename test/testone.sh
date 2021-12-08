@@ -6,6 +6,8 @@ green=`tput setaf 2`
 blue=`tput setaf 4`
 magenta=`tput setaf 5`
 reset=`tput sgr0`
+mkdir ./testbench_and_RAM/compiled_results
+mkdir ./assembler/hexadecimal
 cd assembler/assembly
 echo
 echo -e "${magenta}INSTRUCTION TESTING"
@@ -41,3 +43,6 @@ else
   printf "${blue}-->\t${red}FAILED\n"
   failed=failed+1
 fi
+cd ../../assembler/assembly
+rm -r ../hexadecimal
+rm -r ../../testbench_and_RAM/compiled_results
