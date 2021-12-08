@@ -35,6 +35,12 @@ module mips_cpu_register_file (
       if (write_enable && write_reg != 0) begin
         register[write_reg] <= write_data;
       end
+      if (state == 1 || state == 0) begin
+        for (int i = 0; i < 32; i++) begin
+          $display("register_v", i, " = %d", register[i]);
+        end
+        $display("\n");
+      end
     end
   end
 

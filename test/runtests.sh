@@ -5,8 +5,8 @@ green=`tput setaf 2`
 blue=`tput setaf 4`
 magenta=`tput setaf 5`
 reset=`tput sgr0`
-mkdir ./testbench_and_RAM/compiled_results
-mkdir ./assembler/hexadecimal
+#mkdir ./testbench_and_RAM/compiled_results
+#mkdir ./assembler/hexadecimal
 cd assembler/assembly
 echo
 echo -e "${magenta}INSTRUCTION TESTING"
@@ -43,8 +43,8 @@ for f in *.asm; do
     fi
     cd ../../assembler/assembly
 done
-rm -r ../hexadecimal
-rm -r ../../testbench_and_RAM/compiled_results
+#rm -r ../hexadecimal
+#rm -r ../../testbench_and_RAM/compiled_results
 
 echo
 echo "${green}Tests passed:   $passed"
