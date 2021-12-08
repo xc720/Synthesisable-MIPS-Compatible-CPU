@@ -100,7 +100,7 @@ module mips_cpu_controller (
       case (opcode)
         6'h0: begin  //Rtype and Special
           case (fncode)
-            6'h0 || 6'h2 || 6'h3 || 6'h4 || 6'h6 || 6'h7 || 6'h21 || 6'h23 || 6'h24 || 6'h25 || 6'h26 || 6'h2a || 6'h2b: begin  //SLL, SRL, SRA, SLLV, SRLV, SRAV, ADDU, SUBU, AND, OR, XOR, SLT, SLTU
+            6'h0, 6'h2, 6'h3, 6'h4, 6'h6, 6'h7, 6'h21, 6'h2, 6'h24, 6'h25, 6'h26, 6'h2a, 6'h2b: begin  //SLL, SRL, SRA, SLLV, SRLV, SRAV, ADDU, SUBU, AND, OR, XOR, SLT, SLTU
               regdst = 1;
               regwrite = 1;
               iord = 0;
@@ -160,7 +160,7 @@ module mips_cpu_controller (
               aluouten = 1;
               muldivwrite = 0;
             end
-            6'h10 || 6'h12: begin  //MFHI, MFLO
+            6'h10, 6'h12: begin  //MFHI, MFLO
               regdst = 1;
               regwrite = 1;
               iord = 0;
@@ -180,7 +180,7 @@ module mips_cpu_controller (
               aluouten = 1;
               muldivwrite = 0;
             end
-            6'h11 || 6'h13 || 6'h18 || 6'h19 || 6'h1a || 6'h1b: begin //MTHI, MTLO, MULT, MULTU, DIV, DIVU
+            6'h11, 6'h13, 6'h18, 6'h19, 6'h1a, 6'h1b: begin  //MTHI, MTLO, MULT, MULTU, DIV, DIVU
               regdst = 0;
               regwrite = 0;
               iord = 0;
@@ -283,7 +283,7 @@ module mips_cpu_controller (
           aluouten = 1;
           muldivwrite = 0;
         end
-        6'h4 || 6'h5 || 6'h6 || 6'h7: begin  //BEQ, BNE, BLEZ, BGTZ
+        6'h4, 6'h5, 6'h6, 6'h7: begin  //BEQ, BNE, BLEZ, BGTZ
           regwrite = 0;
           regdst = 0;
           iord = 0;
@@ -323,7 +323,7 @@ module mips_cpu_controller (
           aluouten = 1;
           muldivwrite = 0;
         end
-        6'ha || 6'hb || 6'hc || 6'hd || 6'he: begin  //SLTI. SLTIU ANDI, ORI, XORI
+        6'ha, 6'hb, 6'hc, 6'hd, 6'he: begin  //SLTI. SLTIU ANDI, ORI, XORI
           regdst = 0;
           regwrite = 1;
           iord = 0;
@@ -363,7 +363,7 @@ module mips_cpu_controller (
           aluouten = 1;
           muldivwrite = 0;
         end
-        6'h28 || 6'h29 || 6'h2b: begin  //SB, SH, SW
+        6'h28, 6'h29, 6'h2b: begin  //SB, SH, SW
           regdst = 0;
           regwrite = 0;
           iord = 1;
