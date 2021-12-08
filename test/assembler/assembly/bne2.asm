@@ -1,6 +1,7 @@
-ADDIU $a0, $a0, 4         #
-ADDIU $a1, $a1, 5         #
-BNE   $a0, $a1, Equal         #
-ADDIU $v0, $v0, 2048      #
-ADDIU $v0, $v0, 1024      #
-JR $zero   #not equal/branch on -> $v0 = 1024
+ADDIU $a0, $a0, 16
+ADDIU $a1, $a1, 433
+BNE $a0, $a1, NotEqual
+ADDIU $v0, $v0, 60
+ADDIU $v0, $v0, 100
+NotEqual:
+JR $zero

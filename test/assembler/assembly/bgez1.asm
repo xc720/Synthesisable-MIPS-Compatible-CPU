@@ -1,5 +1,7 @@
-ADDIU $a0, $a0, 4         #
-BGEZ $a0, Equal              #
-ADDIU $a0, $a0, 3         #
-ADDIU $a0, $a0, 4         #
-JR $zero   #branch on/ pc = pc + 8; result -> $a0 = 8
+ADDIU $a0, $a0, 18
+BGEZ $a0, GreaterEqualZero
+ADDIU $v0, $v0, 50          # Branch delay slot
+ADDIU $v0, $v0, 100         # Skipped
+GreaterEqualZero:
+ADDIU $v0, $v0, 3
+JR $zero

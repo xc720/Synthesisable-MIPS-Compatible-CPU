@@ -1,4 +1,5 @@
-ADDIU $a0, $a0, 6         #
-ADDIU $a1, $a1, 6         #
-DIV   $a0, $a1            # Hi = a0%a1  LO = a0/a1
-JR    $zero               #
+ADDIU $a0, $a0, 10
+SUBU $a1, $a1, $a0
+DIV $a0, $a1
+MFHI $v0
+JR $zero

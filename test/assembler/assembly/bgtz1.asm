@@ -1,5 +1,7 @@
-ADDIU $a0, $a0, 4   #
-BGTZ $a0, Equal         #
-ADDIU $a0, $a0, 3   #
-ADDIU $a0, $a0, 4   #
-JR $zero   #branch on/ pc = pc + 8; result -> $a0 = 8
+ADDIU $a0, $a0, 18
+BGTZ $a0, GreaterZero
+ADDIU $v0, $v0, 60
+ADDIU $v0, $v0, 100
+GreaterZero:
+ADDIU $v0, $v0, 6
+JR $zero

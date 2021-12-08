@@ -1,7 +1,7 @@
-ADDIU $a1, $a1, 22        #
-ADDIU $a3, $a3, 11        #
-SUBU  $a3, $a3, $a1       # $3 = -11
-BLEZ $a3, Equal               #
-ADDIU $a0, $a0, 3         #
-ADDIU $a0, $a0, 4         #
-JR $zero                  #branch on; result -> $a0 = 4
+ADDIU $a0, $a0, 0
+BLEZ $a0, LessEqualZero
+ADDIU $v0, $v0, 60
+ADDIU $v0, $v0, 100
+LessEqualZero:
+ADDIU $v0, $v0, 3
+JR $zero

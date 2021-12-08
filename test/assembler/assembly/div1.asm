@@ -1,4 +1,5 @@
-ADDIU $a0, $a0, 4         #
-ADDIU $a1, $a1, 5         #
-DIV   $a1, $a0            # Hi = 5%4  LO = 5/4
-JR    $zero               #
+ADDIU $a0, $a0, 10
+ADDIU $a1, $a1, 2
+DIV $a0, $a1
+MFLO $v0
+JR $zero
