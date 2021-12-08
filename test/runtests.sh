@@ -42,6 +42,8 @@ for f in *.asm; do
     fi
     cd ../../assembler/assembly
 done
+rm -r ../hexadecimal
+rm -r ../../testbench_and_RAM/compiled_results
 
 echo
 echo "${green}Tests passed:   $passed"
