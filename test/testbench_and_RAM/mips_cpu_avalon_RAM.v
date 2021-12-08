@@ -1,4 +1,4 @@
-module avalon_RAM (
+module mips_cpu_avalon_RAM (
     input logic clk,
     input logic [31:0] address,
     input logic [3:0] byteenable,
@@ -25,7 +25,7 @@ module avalon_RAM (
 
     if (RAM_INIT_FILE != "") begin
       $display("Loading RAM contents from %s", RAM_INIT_FILE);
-      $readmemh(RAM_INIT_FILE, memory, 1);
+      $readmemh(RAM_INIT_FILE, memory);
     end
   end
 
