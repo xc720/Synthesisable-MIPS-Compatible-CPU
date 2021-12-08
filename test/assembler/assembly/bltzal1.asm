@@ -1,6 +1,7 @@
-ADDIU $a0, $a0, 4     #
-BLTZAL   $a0, Equal       #
-ADDIU $a0, $a0, 3     #
-ADDIU $a0, $a0, 4     #
-JR $zero              #result -> $a0 = 11
-# And link current pc + 4 to $ra 
+ADDIU $a0, $a0, 16
+BLTZAL $a0, SmallerZero
+ADDIU $v0, $v0, 60
+ADDIU $v0, $v0, 100     # Skipped
+SmallerZero:
+ADDIU $v0, $v0, 3
+JR $zero

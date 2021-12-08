@@ -1,5 +1,6 @@
-ADDIU $a0, $a0, 0
-BGEZAL $a0, GreaterEqualZero
+ADDIU $a0, $a0, 126
+SUBU $a1, $a1, $a0
+BGEZAL $a1, GreaterEqualZero
 ADDIU $v0, $v0, 80      # Branch delay slot
 ADDIU $v0, $v0, 100
 GreaterEqualZero:

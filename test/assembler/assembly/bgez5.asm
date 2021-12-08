@@ -1,7 +1,7 @@
-ADDIU $a0, $a0, 0
+ADDIU $a0, $a0, 2
 BGEZ $a0, GreaterEqualZero
-ADDIU $v0, $v0, 80
-ADDIU $v0, $v0, 100
+ADDIU $v0, $v0, 50
+ADDIU $v0, $v0, 100     # Skipped
 GreaterEqualZero:
 ADDIU $v0, $v0, 6
 JR $zero

@@ -1,6 +1,7 @@
-ADDIU $a0, $a0, 5                               #
-ADDIU $a1, $a1, 5                               #
-BNE   $a0, $a1, Equal                               #
-ADDIU $v0, $v0, 2048                            #
-ADDIU $v0, $v0, 1024                            #
-JR $zero   # equal; $v0 = 2048 + 1024
+ADDIU $a0, $a0, 24
+ADDIU $a1, $a1, 24
+BNE $a0, $a1, NotEqual
+ADDIU $v0, $v0, 60
+ADDIU $v0, $v0, 100
+NotEqual:
+JR $zero

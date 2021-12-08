@@ -1,7 +1,7 @@
-ADDIU $a1, $a1, 22        #
-ADDIU $a3, $a3, 11        #
-SUBU  $a3, $a3, $a1       # $a3 = -11
-BGTZ $a3, Equal               #
-ADDIU $a0, $a0, 3         #
-ADDIU $a0, $a0, 4         #
-JR $zero   #result -> $a0 = 7
+ADDIU $a0, $a0, 0
+BGTZ $a0, GreaterZero
+ADDIU $v0, $v0, 60
+ADDIU $v0, $v0, 100
+GreaterZero:
+ADDIU $v0, $v0, 6
+JR $zero
