@@ -5,6 +5,7 @@ module mips_cpu_register_file (
     input logic write_enable,
     input logic [2:0] state,
     input logic threestate,
+    input logic orwrite,
     // dual input read ports & write input ports
     input logic [4:0] read_reg_1,
     input logic [4:0] read_reg_2,
@@ -33,7 +34,11 @@ module mips_cpu_register_file (
     end else begin
       // write to register
       if (write_enable && write_reg != 0) begin
-        register[write_reg] <= write_data;
+        if (orwrite) begin
+          register[write_reg] <= write_data | register[write_reg];
+        end else begin
+          register[write_reg] <= write_data;
+        end
         //$display("%d", write_data);
       end
       //if (state == 1 || state == 0) begin

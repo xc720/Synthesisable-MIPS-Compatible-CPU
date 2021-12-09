@@ -67,6 +67,8 @@ module mips_cpu_bus (
       muldivwrite,
       threestate,
       aluouten,
+      orwrite,
+      loadlorloadr,
       jump,
       jumpconen;
 
@@ -108,12 +110,12 @@ module mips_cpu_bus (
   assign zero_extended_immediate = {16'h0000, immediate};
 
   //assign where to write to memory from and shifting correct bits to match endians
-  assign writedata = shiftdata == 3 ? read_reg_b_current << 24 : shiftdata == 2 ? read_reg_b_current << 16 : shiftdata == 1 ? read_reg_b_current << 8 : read_reg_b_current;
+  assign writedata = read_reg_b_current << (8 * shiftdata);
 
   //assigns for load instrutions
-  assign reg_write_data = shiftdata == 3 ? to_reg_write >> 24 : shiftdata == 2 ? to_reg_write >> 16 : shiftdata == 1 ? to_reg_write >> 8 : to_reg_write;
+  assign reg_write_data = to_reg_write >> (8 * shiftdata);
   assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;
-  assign final_reg_write_data = loadtype[1] ? {immediate, 16'h0000} : loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
+  assign final_reg_write_data = loadtype[1] ? loadtype[0] ? loadlorloadr ? to_reg_write >> (8*(3 - shiftdata)) : to_reg_write << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
 
 
   //implementing main multiplexers
@@ -159,7 +161,9 @@ module mips_cpu_bus (
       .waitrequest(waitrequest),
       .regdst(regdst),
       .loadtype(loadtype),
+      .loadlorloadr(loadlorloadr),
       .regwrite(regwrite),
+      .orwrite(orwrite),
       .iord(iord),
       .irwrite(ir_write),
       .pcwrite(pcwrite),
@@ -200,6 +204,7 @@ module mips_cpu_bus (
       .reset(reset),
       .state(state),
       .threestate(threestate),
+      .orwrite(orwrite),
       .write_enable(regwrite),
       .read_reg_1(reg_source_1),
       .read_reg_2(reg_source_2),

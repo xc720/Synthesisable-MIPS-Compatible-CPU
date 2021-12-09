@@ -9,7 +9,9 @@ module mips_cpu_controller (
     output logic [1:0] regdst,
     output logic [1:0] shiftload,
     output logic [1:0] loadtype,
+    output logic loadlorloadr,
     output logic regwrite,
+    output logic orwrite,
     output logic iord,
     output logic irwrite,
     output logic pcwrite,
@@ -41,6 +43,7 @@ module mips_cpu_controller (
       regdst = 0;
       loadtype = 0;
       regwrite = 0;
+      orwrite = 0;
       iord = 0;
       irwrite = 0;
       pcwrite = 0;
@@ -62,6 +65,7 @@ module mips_cpu_controller (
       regdst = 0;
       loadtype = 0;
       regwrite = 0;
+      orwrite = 0;
       iord = 0;
       irwrite = 1;
       pcwrite = !waitrequest;
@@ -84,6 +88,7 @@ module mips_cpu_controller (
       regdst = 0;
       loadtype = 0;
       regwrite = 0;
+      orwrite = 0;
       iord = 0;
       irwrite = 0;
       pcwrite = 0;
@@ -109,6 +114,7 @@ module mips_cpu_controller (
               regdst = 1;
               loadtype = 0;
               regwrite = 1;
+              orwrite = 0;
               iord = 0;
               irwrite = 0;
               pcwrite = 0;
@@ -130,6 +136,7 @@ module mips_cpu_controller (
               regdst = 0;
               loadtype = 0;
               regwrite = 0;
+              orwrite = 0;
               iord = 0;
               irwrite = 0;
               pcwrite = 0;
@@ -151,6 +158,7 @@ module mips_cpu_controller (
               regdst = 1;
               loadtype = 0;
               regwrite = 1;
+              orwrite = 0;
               iord = 0;
               irwrite = 0;
               pcwrite = 0;
@@ -172,6 +180,7 @@ module mips_cpu_controller (
               regdst = 1;
               loadtype = 0;
               regwrite = 1;
+              orwrite = 0;
               iord = 0;
               irwrite = 0;
               pcwrite = 0;
@@ -193,6 +202,7 @@ module mips_cpu_controller (
               regdst = 0;
               loadtype = 0;
               regwrite = 0;
+              orwrite = 0;
               iord = 0;
               irwrite = 0;
               pcwrite = 0;
@@ -215,6 +225,7 @@ module mips_cpu_controller (
         6'h1: begin  //REGIMM     BLTZ, BLTZAL, BGEZ, BGEZAL
           if (regimm < 2) begin  //BLTZ, BGEZ
             regwrite = 0;
+            orwrite = 0;
             loadtype = 0;
             regdst = 0;
             iord = 0;
@@ -237,6 +248,7 @@ module mips_cpu_controller (
             regdst = 2;
             loadtype = 0;
             regwrite = exec1;
+            orwrite = 0;
             iord = 0;
             irwrite = 0;
             pcwrite = 0;
@@ -257,6 +269,7 @@ module mips_cpu_controller (
         end
         6'h2: begin  //J
           regwrite = 0;
+          orwrite = 0;
           loadtype = 0;
           regdst = 0;
           iord = 0;
@@ -280,6 +293,7 @@ module mips_cpu_controller (
           regdst = 1;
           loadtype = 0;
           regwrite = 1;
+          orwrite = 0;
           iord = 0;
           irwrite = 0;
           pcwrite = 0;
@@ -300,6 +314,7 @@ module mips_cpu_controller (
         6'h4, 6'h5, 6'h6, 6'h7: begin  //BEQ, BNE, BLEZ, BGTZ
           regwrite = 0;
           loadtype = 0;
+          orwrite = 0;
           regdst = 0;
           iord = 0;
           irwrite = 0;
@@ -322,6 +337,7 @@ module mips_cpu_controller (
           regdst = 0;
           loadtype = 0;
           regwrite = 1;
+          orwrite = 0;
           iord = 0;
           irwrite = 0;
           pcwrite = 0;
@@ -343,6 +359,7 @@ module mips_cpu_controller (
           regdst = 0;
           loadtype = 0;
           regwrite = 1;
+          orwrite = 0;
           iord = 0;
           irwrite = 0;
           pcwrite = 0;
@@ -364,6 +381,7 @@ module mips_cpu_controller (
           regdst = 0;
           loadtype = 2;
           regwrite = 1;
+          orwrite = 0;
           iord = 0;
           irwrite = 0;
           pcwrite = 0;
@@ -381,11 +399,13 @@ module mips_cpu_controller (
           aluouten = 1;
           muldivwrite = 0;
         end
-        6'h20, 6'h21, 6'h23, 6'h24, 6'h25: begin  //LB, LH, LW, LBU, LHU
+        6'h20, 6'h21, 6'h22, 6'h23, 6'h24, 6'h25, 6'h26: begin  //LB, LH, LWL, LW, LBU, LHU, LWR
           regdst = 0;
-          shiftdata = opcode == 6'h23 ? 0 : memoryadress % 4;
-          loadtype = opcode == 6'h20 || opcode == 6'h21 || opcode == 6'h23;
+          shiftdata = memoryadress % 4;
+          loadtype = (opcode == 6'h22 || opcode == 6'h26) ? 3 : (opcode == 6'h20 || opcode == 6'h21 || opcode == 6'h23) ? 1 : 0;
+          loadlorloadr = opcode == 6'h26;
           regwrite = exec2;
+          orwrite = opcode == 6'h22 || opcode == 6'h26;
           iord = 1;
           irwrite = 0;
           pcwrite = 0;
@@ -407,6 +427,7 @@ module mips_cpu_controller (
           regdst = 0;
           loadtype = 0;
           regwrite = 0;
+          orwrite = 0;
           iord = 1;
           irwrite = 0;
           pcwrite = 0;
@@ -416,8 +437,8 @@ module mips_cpu_controller (
           threestate = 1;
           memread = 0;
           memwrite = 1;
-          shiftdata = opcode == 6'h2b ? 0 : memoryadress % 4;
-          byteenable = opcode == 6'h2b ? 4'b1111 : opcode == 6'h29 ? memoryadress % 4 == 0 ? 4'b0011 : 4'b1100 : memoryadress % 4 == 3 ? 4'b1000 : memoryadress % 4 == 2 ? 4'b0100 : memoryadress % 4 == 1 ? 4'b0010 : 4'b0001; //TODO:fix when i understand Indians better
+          shiftdata = memoryadress % 4;
+          byteenable = opcode == 6'h2b ? 4'b1111 : opcode == 6'h29 ? 3 << (memoryadress % 4) : 1 << (memoryadress % 4); //TODO:fix when i understand Indians better
           memtoreg = 0;
           aluop = 0;
           alusrca = 1;
