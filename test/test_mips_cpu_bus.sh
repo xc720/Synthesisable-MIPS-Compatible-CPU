@@ -14,7 +14,7 @@ if [ ! -d $1 ]; then
   echo -e "Invalid RTL Dir: $1"
   exit
 fi
-cd assembler/assembly
+cd test/assembler/assembly
 echo
 echo "${red}-=-=-=-=-=-=-=-=-=-"
 echo -e "${blue}INSTRUCTION TESTING"
@@ -51,7 +51,7 @@ for f in *.asm; do
   rm $f.out
   cd ../../testbench_and_RAM
   start=$(date +%s.%N)
-  iverilog -Wall -g 2012 -o tb.out ../$RTLDR/*.v mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"../assembler/hexadecimal/$f.txt\" >/dev/null && ./tb.out >/dev/null || true
+  iverilog -Wall -g 2012 -o tb.out $RTLDR/*.v mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"../assembler/hexadecimal/$f.txt\" >/dev/null && ./tb.out >/dev/null || true
   dur=$(echo "$(date +%s.%N) - $start" | bc)
   rm tb.out
   cd compiled_results
