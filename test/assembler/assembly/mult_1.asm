@@ -1,7 +1,7 @@
-ADDIU $a0, $a0, 512         #        
-ADDIU $a1, $a1, 1024        #
+ADDIU $a0, $a0, 32767         #        
+ADDIU $a1, $a1, 32767        #
 MULT $a0, $a1               #
+MFLO $a3                    #
+MULT $a3, $a1               #
 MFLO $v0                    #
-MFHI $a2                    #
-ADDU $v0, $v0, $a2          #
-JR $zero                    #
+JR $zero                    #v0=1073840127

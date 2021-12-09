@@ -1,6 +1,5 @@
-ADDIU $a0, $a0, 64          #
-MULT $a0, $zero             #
-MFLO $v0                    #
-MFHI $a2                    #
-ADDU $v0, $v0, $a2          #
-JR $zero                    #
+ADDIU $a0, $a0, 32767          #
+SUBU $a1, $a1, $a0          #
+MULT $a0, $a1               #
+MFHI $v0                    #
+JR $zero                    #v0=-1
