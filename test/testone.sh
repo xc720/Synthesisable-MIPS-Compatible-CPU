@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eou pipefail
-f="beq_1.asm"
+f="bgez_3.asm"
 red=`tput setaf 1`
 green=`tput setaf 2`
 blue=`tput setaf 4`

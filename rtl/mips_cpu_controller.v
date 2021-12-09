@@ -110,7 +110,7 @@ module mips_cpu_controller (
       case (opcode)
         6'h0: begin  //Rtype and Special
           case (fncode)
-            6'h0, 6'h2, 6'h3, 6'h4, 6'h6, 6'h7, 6'h21, 6'h2, 6'h24, 6'h25, 6'h26, 6'h2a, 6'h2b: begin  //SLL, SRL, SRA, SLLV, SRLV, SRAV, ADDU, SUBU, AND, OR, XOR, SLT, SLTU
+            6'h0, 6'h2, 6'h3, 6'h4, 6'h6, 6'h7, 6'h21, 6'h23, 6'h24, 6'h25, 6'h26, 6'h2a, 6'h2b: begin  //SLL, SRL, SRA, SLLV, SRLV, SRAV, ADDU, SUBU, AND, OR, XOR, SLT, SLTU
               regdst = 1;
               loadtype = 0;
               regwrite = 1;
