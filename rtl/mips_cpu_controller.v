@@ -40,32 +40,19 @@ module mips_cpu_controller (
     exec2 = (state == 4);
 
     if (state == 0) begin  //haulted
-      regdst = 0;
-      loadtype = 0;
       regwrite = 0;
-      orwrite = 0;
       iord = 0;
       irwrite = 0;
       pcwrite = 0;
-      pcsource = 0;
       pcwritecond = 0;
       jump = 0;
       jumpconen = 0;
-      threestate = 0;
       memread = 0;
       memwrite = 0;
-      byteenable = 0;
-      memtoreg = 0;
-      aluop = 0;
-      alusrca = 0;
-      alusrcb = 0;
       aluouten = 0;
       muldivwrite = 0;
-    end else if (state == 1) begin  //fetch
-      regdst = 0;
-      loadtype = 0;
+    end else if (state == 1) begin  //fetch     
       regwrite = 0;
-      orwrite = 0;
       iord = 0;
       irwrite = 1;
       pcwrite = !waitrequest;
@@ -73,39 +60,27 @@ module mips_cpu_controller (
       pcwritecond = 0;
       jump = 0;
       jumpconen = !waitrequest;
-      threestate = 0;
       memread = 1;
       memwrite = 0;
-      byteenable = 0;
-      memtoreg = 0;
+      byteenable = 4'b1111;
       aluop = 0;
       alusrca = 0;
       alusrcb = 1;
       aluouten = 1;
       muldivwrite = 0;
-
     end else if (state == 2) begin  //decode
-      regdst = 0;
-      loadtype = 0;
       regwrite = 0;
-      orwrite = 0;
-      iord = 0;
       irwrite = 0;
       pcwrite = 0;
-      pcsource = 0;
       pcwritecond = 0;
       jump = 0;
-      threestate = 0;
       memread = 0;
       memwrite = 0;
-      byteenable = 0;
-      memtoreg = 0;
       aluop = 0;
       alusrca = 0;
       alusrcb = 3;
       aluouten = 1;
       muldivwrite = 0;
-
     end else begin  //exec1 and exec2
       case (opcode)
         6'h0: begin  //Rtype and Special
@@ -115,16 +90,13 @@ module mips_cpu_controller (
               loadtype = 0;
               regwrite = 1;
               orwrite = 0;
-              iord = 0;
               irwrite = 0;
               pcwrite = 0;
-              pcsource = 0;
               pcwritecond = 0;
               jump = 0;
               threestate = 1;
               memread = 0;
               memwrite = 0;
-              byteenable = 0;
               memtoreg = 0;
               aluop = 2;
               alusrca = 1;
@@ -133,11 +105,7 @@ module mips_cpu_controller (
               muldivwrite = 0;
             end
             6'h8: begin  //JR
-              regdst = 0;
-              loadtype = 0;
               regwrite = 0;
-              orwrite = 0;
-              iord = 0;
               irwrite = 0;
               pcwrite = 0;
               pcsource = 3;
@@ -146,8 +114,6 @@ module mips_cpu_controller (
               threestate = 1;
               memread = 0;
               memwrite = 0;
-              byteenable = 0;
-              memtoreg = 0;
               aluop = 0;
               alusrca = 0;
               alusrcb = 0;
@@ -415,7 +381,7 @@ module mips_cpu_controller (
           threestate = 0;
           memread = exec1;
           memwrite = 0;
-          byteenable = 0;
+          byteenable = (opcode == 6'h22 || opcode == 6'h26 || opcode == 6'h23) ? 4'b1111 : (opcode == 6'h21 || opcode == 6'h25) ? 3 << (memoryadress % 4) : 1 << (memoryadress % 4);
           memtoreg = 1;
           aluop = 0;
           alusrca = 1;
@@ -438,7 +404,7 @@ module mips_cpu_controller (
           memread = 0;
           memwrite = 1;
           shiftdata = memoryadress % 4;
-          byteenable = opcode == 6'h2b ? 4'b1111 : opcode == 6'h29 ? 3 << (memoryadress % 4) : 1 << (memoryadress % 4); //TODO:fix when i understand Indians better
+          byteenable = opcode == 6'h2b ? 4'b1111 : opcode == 6'h29 ? 3 << (memoryadress % 4) : 1 << (memoryadress % 4);
           memtoreg = 0;
           aluop = 0;
           alusrca = 1;
