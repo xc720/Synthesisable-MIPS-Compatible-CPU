@@ -7,24 +7,27 @@ magenta=`tput setaf 5`
 reset=`tput sgr0`
 #mkdir ./testbench_and_RAM/compiled_results
 #mkdir ./assembler/hexadecimal
+
+RTLDR=$1
+INSTRCTN=${2:-all}
+if [ ! -d $1 ]; then
+  echo -e "Invalid RTL Dir: $1"
+  exit
+fi
 cd assembler/assembly
 echo
 echo "${red}-=-=-=-=-=-=-=-=-=-"
 echo -e "${blue}INSTRUCTION TESTING"
 echo "${red}-=-=-=-=-=-=-=-=-=-"
-echo
-echo -e "${magenta}1) ${reset}RUN ALL\t\t${magenta}2) ${reset}SINGLE INSTRUCTION\n"
-printf "${reset}Option: "
-read input
-if [ "$input" = "2" ]; then
+if [ "$INSTRCTN" != "all" ]; then
   printf "Instruction: ${magenta}"
-  read input_instruction
+  input_instruction=$2
   echo -e "\n${reset}Testing ${magenta}${input_instruction^^}\n"
-else
+elif [ "$INSTRCTN" = "all" ]; then
   echo -e "\nTesting ${magenta}ALL\n"
 fi
 echo "${reset}================================================================="
-echo -e "${red}INSTRUCTION${reset}\t|\t${red}VARIANT${reset}\t\t|  ${red}EXEC TIME${reset}\t|  ${red}RESULT${reset}"
+echo -e "${red}INSTRUCTION${reset}\t|\t${red}VARIANT${reset}\t    |  ${red}EXEC TIME${reset}\t|  ${red}RESULT${reset}"
 
 declare -i passed=0
 declare -i failed=0
@@ -32,9 +35,9 @@ declare previous_instruction="s"
 
 for f in *.asm; do
   declare instruction=$(echo ${f::-6} | tr '[:lower:]' '[:upper:]')
-  if [ "$input" = "1" ]; then
+  if [ "$INSTRCTN" = "all" ]; then
     instruction=$(echo ${f::-6} | tr '[:lower:]' '[:upper:]')
-  elif [ "$input" = "2" ]; then
+  elif [ "$INSTRCTN" != "all" ]; then
     if [ "$instruction" = "${input_instruction^^}" ]; then
       instruction=$(echo ${f::-6} | tr '[:lower:]' '[:upper:]')
     else
@@ -48,7 +51,7 @@ for f in *.asm; do
   rm $f.out
   cd ../../testbench_and_RAM
   start=$(date +%s.%N)
-  iverilog -Wall -g 2012 -o tb.out ../../rtl/*.v mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"../assembler/hexadecimal/$f.txt\" >/dev/null && ./tb.out >/dev/null || true
+  iverilog -Wall -g 2012 -o tb.out ../$RTLDR/*.v mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"../assembler/hexadecimal/$f.txt\" >/dev/null && ./tb.out >/dev/null || true
   dur=$(echo "$(date +%s.%N) - $start" | bc)
   rm tb.out
   cd compiled_results
@@ -71,7 +74,7 @@ for f in *.asm; do
     printf "%-${diff}s" " " 
     printf "\t|\t${blue}${f%.*}${reset}"
     printf "%-${diff}s" " " 
-    printf "\t|  ${reset}%.6fs\t|  ${green}PASSED\n" $dur
+    printf "|  ${reset}%.6fs\t|  ${green}PASSED\n" $dur
     passed=passed+1
   else
     printf "${reset}"
@@ -79,7 +82,7 @@ for f in *.asm; do
     printf "%-${diff}s" " " 
     printf "\t|\t${blue}${f%.*}${reset}"
     printf "%-${diff}s" " " 
-    printf "\t|  ${reset}%.6fs\t|  ${red}FAILED\n" $dur
+    printf "|  ${reset}%.6fs\t|  ${red}FAILED\n" $dur
     failed=failed+1
   fi
   cd ../../assembler/assembly
