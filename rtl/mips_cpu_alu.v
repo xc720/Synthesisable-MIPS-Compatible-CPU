@@ -27,9 +27,9 @@ module mips_cpu_alu (
 
   always_comb begin
 
-    if (mult_op == 3'b111) begin
+    if (mult_op == 3'b110) begin
       result = hi;
-    end else if (mult_op == 3'b110) begin
+    end else if (mult_op == 3'b111) begin
       result = lo;
     end else begin
       case (alu_func)

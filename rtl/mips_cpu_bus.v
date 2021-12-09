@@ -67,11 +67,10 @@ module mips_cpu_bus (
       muldivwrite,
       threestate,
       aluouten,
-      extendload,
       jump,
       jumpconen;
 
-  logic [1:0] pcsource, regdst, shiftdata;
+  logic [1:0] pcsource, regdst, shiftdata, loadtype;
   logic [2:0] alusrcb;
   logic [3:0] aluop;
 
@@ -113,8 +112,8 @@ module mips_cpu_bus (
 
   //assigns for load instrutions
   assign reg_write_data = shiftdata == 3 ? to_reg_write >> 24 : shiftdata == 2 ? to_reg_write >> 16 : shiftdata == 1 ? to_reg_write >> 8 : to_reg_write;
-  assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] == 0 ? reg_write_data : {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data[15] == 0 ? reg_write_data : {16'hFFFF, reg_write_data[15:0]};
-  assign final_reg_write_data = extendload ? sign_extended_reg_write_data : to_reg_write;
+  assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;
+  assign final_reg_write_data = loadtype[1] ? {immediate, 16'h0000} : loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
 
 
   //implementing main multiplexers
@@ -159,7 +158,7 @@ module mips_cpu_bus (
       .state(state),
       .waitrequest(waitrequest),
       .regdst(regdst),
-      .extendload(extendload),
+      .loadtype(loadtype),
       .regwrite(regwrite),
       .iord(iord),
       .irwrite(ir_write),
