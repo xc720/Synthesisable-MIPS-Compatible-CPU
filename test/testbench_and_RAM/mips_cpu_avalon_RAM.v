@@ -49,10 +49,10 @@ module mips_cpu_avalon_RAM (
         waittime <= waittime - 1;
       end else begin
         if (read) begin
-          readdata[31:24] <= byteenable[3] ? readdata[31:24] : memory[sim_address][31:24];
-          readdata[23:16] <= byteenable[2] ? readdata[23:16] : memory[sim_address][23:16];
-          readdata[15:8] <= byteenable[1] ? readdata[15:8] : memory[sim_address][15:8];
-          readdata[7:0] <= byteenable[0] ? readdata[7:0] :memory[sim_address][7:0];
+          readdata[31:24] <= byteenable[3] ? memory[sim_address][31:24] : 0;
+          readdata[23:16] <= byteenable[2] ? memory[sim_address][23:16] : 0;
+          readdata[15:8]  <= byteenable[1] ? memory[sim_address][15:8] : 0;
+          readdata[7:0]   <= byteenable[0] ? memory[sim_address][7:0] : 0;
         end else if (write) begin
           memory[sim_address][31:24] <= (byteenable[3] ? writedata[31:24] : memory[sim_address][31:24]);
           memory[sim_address][23:16] <= (byteenable[2] ? writedata[23:16] : memory[sim_address][23:16]);
