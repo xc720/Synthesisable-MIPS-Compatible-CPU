@@ -1,5 +1,11 @@
-ADDIU $a1, $a1, 12        #
-JR $a1                    # jump to mem[4]
-ADDIU $a1, $a1, 5         #
-ADDIU $a1, $a1, 5         #
-JR $zero                  # $a1 should be 17
+ADDIU $v0, $0, 10   #
+JAL Equal           #
+ADDIU $v0, $v0, 1   #
+ADDIU $v0, $v0, 10  #
+Equal:                
+ADDIU $ra, $ra, 24  #
+JR $ra              #
+ADDIU $v0, $v0, 3   #
+ADDIU $v0, $v0, 1   #
+ADDU $v0, $v0, $ra  #
+JR $zero            #v0=4194346

@@ -1,3 +1,3 @@
-ADDIU $a1, $a1, 2
-SLTIU $v0, $a1, 4
-JR $ra
+LUI $a0, 0xffff
+SLTIU $v0, $a0, 0xffff
+JR $zero
