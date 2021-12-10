@@ -4,17 +4,15 @@ module mips_cpu_bus (
     input logic reset,
     output logic active,
     output logic [31:0] register_v0,
-    output logic [31:0] register[31:0],
-    //logic for clk, reset, active, register_v0 not yet implemented
 
     /* Avalon memory mapped bus controller */
-    output logic [31:0] mem_address,
-    output logic memwrite,
-    output logic memread,
+    output logic [31:0] address,
+    output logic write,
+    output logic read,
     input logic waitrequest,
-    output logic [31:0] memwritedata,
+    output logic [31:0] writedata,
     output logic [3:0] byteenable,
-    input logic [31:0] memreaddata
+    input logic [31:0] readdata
 );
 
   //variables for pc
@@ -48,7 +46,13 @@ module mips_cpu_bus (
 
   //variables for register file
   logic [4:0] reg_source_1, reg_source_2, reg_dest;
-  logic [31:0] reg_write_data, read_reg_1, read_reg_2;
+  logic [31:0]
+      to_reg_write,
+      reg_write_data,
+      sign_extended_reg_write_data,
+      final_reg_write_data,
+      read_reg_1,
+      read_reg_2;
   logic [4:0] reg_write_address;
 
   //variables for control
@@ -63,10 +67,12 @@ module mips_cpu_bus (
       muldivwrite,
       threestate,
       aluouten,
+      orwrite,
+      loadlorloadr,
       jump,
       jumpconen;
 
-  logic [1:0] pcsource, regdst;
+  logic [1:0] pcsource, regdst, shiftdata, loadtype;
   logic [2:0] alusrcb;
   logic [3:0] aluop;
 
@@ -99,17 +105,23 @@ module mips_cpu_bus (
     end
   end
 
-  //sign extend immediate
+  //sign extending
   assign sign_extended_immediate = immediate[15] ? {16'hFFFF, immediate} : {16'h0000, immediate};
   assign zero_extended_immediate = {16'h0000, immediate};
 
-  //assign where to write to memory from
-  assign memwritedata = read_reg_b_current;
+  //assign where to write to memory from and shifting correct bits to match endians
+  assign writedata = read_reg_b_current << (8 * shiftdata);
 
-  //implementing all multiplexers
-  assign mem_address = iord ? alu_result : pc_value;
+  //assigns for load instrutions
+  assign reg_write_data = to_reg_write >> (8 * shiftdata);
+  assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;
+  assign final_reg_write_data = loadtype[1] ? loadtype[0] ? loadlorloadr ? to_reg_write >> (8*(3 - shiftdata)) : to_reg_write << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
+
+
+  //implementing main multiplexers
+  assign address = iord ? alu_result : pc_value;
   assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_dest : reg_source_2;
-  assign reg_write_data = memtoreg ? mem_reg_current : alu_result;
+  assign to_reg_write = memtoreg ? mem_reg_current : alu_result;
   assign alu_in_a = alusrca ? read_reg_a_current : pc_value;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
   assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
@@ -117,7 +129,7 @@ module mips_cpu_bus (
 
   //implementing all single registers
   always_ff @(posedge clk) begin
-    mem_reg_current <= memreaddata;
+    mem_reg_current <= readdata;
     read_reg_a_current <= read_reg_1;
     read_reg_b_current <= read_reg_2;
     if (jumpconen) begin
@@ -148,7 +160,10 @@ module mips_cpu_bus (
       .state(state),
       .waitrequest(waitrequest),
       .regdst(regdst),
+      .loadtype(loadtype),
+      .loadlorloadr(loadlorloadr),
       .regwrite(regwrite),
+      .orwrite(orwrite),
       .iord(iord),
       .irwrite(ir_write),
       .pcwrite(pcwrite),
@@ -157,8 +172,10 @@ module mips_cpu_bus (
       .threestate(threestate),
       .pcsource(pcsource),
       .pcwritecond(pcwritecond),
-      .memread(memread),
-      .memwrite(memwrite),
+      .memread(read),
+      .memwrite(write),
+      .shiftdata(shiftdata),
+      .byteenable(byteenable),
       .memtoreg(memtoreg),
       .aluop(aluop),
       .muldivwrite(muldivwrite),
@@ -171,7 +188,7 @@ module mips_cpu_bus (
       .clk(clk),
       .enable(ir_write),
       .state(state),
-      .memory_output(memreaddata),
+      .memory_output(readdata),
       .control_input(opcode),  //instruction[31-26]
       .source_1(reg_source_1),  // instruction[25:21] 
       .source_2(reg_source_2),  //instruction[20:16]   
@@ -187,15 +204,15 @@ module mips_cpu_bus (
       .reset(reset),
       .state(state),
       .threestate(threestate),
+      .orwrite(orwrite),
       .write_enable(regwrite),
       .read_reg_1(reg_source_1),
       .read_reg_2(reg_source_2),
       .write_reg(reg_write_address),
-      .write_data(reg_write_data),
+      .write_data(final_reg_write_data),
       .read_data_1(read_reg_1),
       .read_data_2(read_reg_2),
-      .read_data_v0(register_v0),
-      .register(register)
+      .read_data_v0(register_v0)
   );
 
   mips_cpu_alu cpu_alu (

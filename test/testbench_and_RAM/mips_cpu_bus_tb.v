@@ -1,7 +1,6 @@
 module mips_cpu_bus_tb;
   //timeunit 1ns / 10ps;
-
-  parameter RAM_INIT_FILE = "as.dump";
+  parameter RAM_INIT_FILE = "";
   parameter TIMEOUT_CYCLES = 10000;
   int resultfile;
 
@@ -9,27 +8,26 @@ module mips_cpu_bus_tb;
   logic reset;
   logic active;
 
-  logic memread;
-  logic memwrite;
+  logic read;
+  logic write;
   logic waitrequest;
 
   logic [3:0] byteenable;
 
   logic [31:0] register_v0;
-  logic [31:0] mem_address;
-  logic [31:0] memreaddata;
-  logic [31:0] memwritedata;
-  logic [31:0] register[31:0];
+  logic [31:0] address;
+  logic [31:0] readdata;
+  logic [31:0] writedata;
 
   mips_cpu_avalon_RAM #(RAM_INIT_FILE) RAMInst (
       .clk(clk),
-      .address(mem_address),
+      .address(address),
       .byteenable(byteenable),
-      .read(memread),
-      .write(memwrite),
+      .read(read),
+      .write(write),
       .waitrequest(waitrequest),
-      .readdata(memreaddata),
-      .writedata(memwritedata)
+      .readdata(readdata),
+      .writedata(writedata)
   );
 
   mips_cpu_bus cpuBusInst (
@@ -37,20 +35,19 @@ module mips_cpu_bus_tb;
       .reset(reset),
       .active(active),
       .register_v0(register_v0),
-      .mem_address(mem_address),
-      .memwrite(memwrite),
-      .memread(memread),
+      .address(address),
+      .write(write),
+      .read(read),
       .waitrequest(waitrequest),
-      .memwritedata(memwritedata),
+      .writedata(writedata),
       .byteenable(byteenable),
-      .memreaddata(memreaddata),
-      .register(register)
+      .readdata(readdata)
   );
 
   // generate clock
   initial begin
     // $timeformat(-9, 1, " ns", 20);
-    resultfile = $fopen("./result.txt", "w");
+    resultfile = $fopen("./compiled_results/result.txt", "w");
     $dumpfile("mips_cpu_bus_tb.vcd");
     $dumpvars(0, mips_cpu_bus_tb);
     clk = 0;
@@ -73,7 +70,7 @@ module mips_cpu_bus_tb;
     reset <= 0;
 
     @(posedge clk);
-    $display("address = %h", mem_address);
+    //$display("address = %h", mem_address);
     assert (active == 1)
     else $display("TB: CPU did not set active=1 after reset.");
 
@@ -84,12 +81,8 @@ module mips_cpu_bus_tb;
         $display("CPU HALUTED, register_v0 = %d", register_v0);
         $fwrite(resultfile, register_v0);
         $fclose(resultfile);
-
-
         $finish;
       end
     end
-
-
   end
 endmodule

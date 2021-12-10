@@ -5,6 +5,7 @@ module mips_cpu_register_file (
     input logic write_enable,
     input logic [2:0] state,
     input logic threestate,
+    input logic orwrite,
     // dual input read ports & write input ports
     input logic [4:0] read_reg_1,
     input logic [4:0] read_reg_2,
@@ -13,11 +14,10 @@ module mips_cpu_register_file (
     // dual read output ports & v0 port
     output logic [31:0] read_data_1,
     output logic [31:0] read_data_2,
-    output logic [31:0] read_data_v0,
-    output logic [31:0] register[31:0]
+    output logic [31:0] read_data_v0
 );
   // create 32x32-bit register
-  // logic [31:0] register[31:0];
+  logic [31:0] register[31:0];
 
   // return data
   assign read_data_v0 = register[2];
@@ -34,8 +34,19 @@ module mips_cpu_register_file (
     end else begin
       // write to register
       if (write_enable && write_reg != 0) begin
-        register[write_reg] <= write_data;
+        if (orwrite) begin
+          register[write_reg] <= write_data | register[write_reg];
+        end else begin
+          register[write_reg] <= write_data;
+        end
+        //$display("%d", write_data);
       end
+      //if (state == 1 || state == 0) begin
+      //  for (int i = 0; i < 32; i++) begin
+      //    $display("register_v", i, " = %d", register[i]);
+      //  end
+      //  $display("\n");
+      //end
     end
   end
 
