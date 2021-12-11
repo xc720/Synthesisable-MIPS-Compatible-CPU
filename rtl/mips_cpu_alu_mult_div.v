@@ -6,8 +6,7 @@ module mips_cpu_alu_mult_div (
     input logic write,
     input logic reset,
 
-    output logic [31:0] hi,
-    lo
+    output logic [31:0] hi, lo
 );
 
   logic [31:0] mag_a, mag_b, signed_a, signed_b, unsigned_a, unsigned_b, div_u, div, rem_u, rem;
