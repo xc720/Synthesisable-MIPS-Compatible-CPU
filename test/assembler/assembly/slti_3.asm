@@ -1,4 +1,3 @@
-ADDIU $a0, $a0, 2   # a0 = 2
-SUBU $v0, $a1, $a0  # v0 = -2
-SLTI $v0, $v0, 2    # v0 = -2 <= 2 = 1
+LUI $a0, 0xffff         # a0 = -65536
+SLTI $v0, $a0, 0xffff   # v0 = -65536 <= -1 = 0
 JR $zero
