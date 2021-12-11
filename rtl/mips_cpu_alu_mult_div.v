@@ -9,11 +9,11 @@ module mips_cpu_alu_mult_div (
     output logic [31:0] hi, lo
 );
 
-  logic [31:0] mag_a, mag_b, signed_a, signed_b, unsigned_a, unsigned_b, div_u, div, rem_u, rem;
+  logic [31:0] signed_a, signed_b, unsigned_a, unsigned_b, div_u, div, rem_u, rem;
   logic [63:0] mult_u, mult;
 
-  assign sign_a = a[31];
-  assign sign_b = b[31];
+  //assign sign_a = a[31];
+  //assign sign_b = b[31];
 
   always_comb begin
     signed_a = $signed(a);
