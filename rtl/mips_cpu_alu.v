@@ -49,7 +49,7 @@ module mips_cpu_alu (
         5'b01100: result = a ^ b;  // XOR
 
         //branch conditions
-        5'b01100: result = (a == b);  // BEQ
+        5'b10010: result = (a == b);  // BEQ
         5'b01101: result = $signed(a) >= 0;  // BGEZ (and link?)
         5'b01110: result = $signed(a) > 0;  // BGTZ
         5'b01111: result = $signed(a) <= 0;  // BLEZ
