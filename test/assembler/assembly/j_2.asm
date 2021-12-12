@@ -4,4 +4,4 @@ J Equal                   #
 ADDIU $v0, $v0, 5         #
 JR $zero
 Equal:
-JR $a1                  # $v0 should be 5
+JR $zero                 # $v0 should be 5

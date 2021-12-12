@@ -256,7 +256,7 @@ module mips_cpu_controller (
           muldivwrite = 0;
         end
         6'h3: begin  //JAL
-          regdst = 1;
+          regdst = 2;
           loadtype = 0;
           regwrite = 1;
           orwrite = 0;

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eou pipefail
-f="bgezal_7.asm"
+f="jalr_2.asm"
 red=`tput setaf 1`
 green=`tput setaf 2`
 blue=`tput setaf 4`
@@ -16,7 +16,7 @@ declare -i passed=0
 declare -i failed=0
 
 
-cd ../hexadecimal
+cd ../hexadecimalS
 mips-linux-gnu-as --no-warn -o $f.out ../assembly/$f
 mips-linux-gnu-readelf --hex-dump=.text $f.out | sed -n -e '/0x00000000/,$p' | sed 's/^ *0x//g' | xxd -r | xxd -p -c 10000000000 | sed 's/.\{8\}/& /g' > $f.txt
 rm $f.out
