@@ -1,6 +1,11 @@
-ADDIU $a1, $a1, 12        # jump to mem[4]
-JALR  $v0                 #
-ADDIU $a1, $a1, 5         #
-ADDIU $a1, $a1, 5         #
-JR $zero                  # $a1 should be 27
-# And link current pc + 4 to $ra 
+ADDIU $v0, $0, 10   #
+JAL Equal           # 
+ADDIU $v0, $v0, 1   # 
+ADDIU $v0, $v0, 10  # 
+Equal:                
+ADDIU $ra, $ra, 20  #
+JALR $t2, $ra       #
+ADDIU $v0, $v0, 3   #
+ADDIU $v0, $v0, 1   # 
+ADDU $v0, $v0, $ra  #
+JR $0               #v0=4194343

@@ -1,5 +1,5 @@
-ADDIU $a0, $a0, 13
-ADDIU $a1, $a1, 7
-DIVU $zero, $a0, $a1
-MFLO $v0
+ADDIU $a0, $zero, 13
+ADDIU $a1, $zero, 7
+DIVU $a0, $a1
+MFLO $v0 #v0 = 1
 JR $zero
