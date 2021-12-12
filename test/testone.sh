@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eou pipefail
-f="xor_3.asm"
+f="mult_2.asm"
 red=`tput setaf 1`
 green=`tput setaf 2`
 blue=`tput setaf 4`

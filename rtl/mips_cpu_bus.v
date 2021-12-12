@@ -218,6 +218,7 @@ module mips_cpu_bus (
   mips_cpu_alu cpu_alu (
       .clk(clk),
       .reset(reset),
+      .state(state),
       .alu_func(toalu),
       .mult_op(tomult),
       .a(alu_in_a),

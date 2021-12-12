@@ -1,6 +1,7 @@
 module mips_cpu_alu (
     input logic clk,
     input logic reset,
+    input logic [2:0] state,
     input logic [4:0] alu_func,
     input logic [31:0] a,
     input logic [31:0] b,
@@ -27,9 +28,9 @@ module mips_cpu_alu (
 
   always_comb begin
 
-    if (mult_op == 3'b110) begin
+    if (mult_op == 3'b110 && state == 3) begin
       result = hi;
-    end else if (mult_op == 3'b111) begin
+    end else if (mult_op == 3'b111 && state == 3) begin
       result = lo;
     end else begin
       case (alu_func)
