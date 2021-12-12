@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eou pipefail
-f="mult_2.asm"
+f="lwl_2.asm"
 red=`tput setaf 1`
 green=`tput setaf 2`
 blue=`tput setaf 4`
