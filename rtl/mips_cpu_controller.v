@@ -226,7 +226,7 @@ module mips_cpu_controller (
             memwrite = 0;
             byteenable = 0;
             memtoreg = 0;
-            aluop = exec2 * (regimm == 16) ? 7 : 4;
+            aluop = exec2 * (regimm == 16) ? 7 : exec2 ? 4 : 0;
             alusrca = exec2;
             alusrcb = 1;
             aluouten = 0;
