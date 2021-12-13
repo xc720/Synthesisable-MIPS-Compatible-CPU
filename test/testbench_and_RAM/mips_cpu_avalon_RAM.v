@@ -30,7 +30,7 @@ module mips_cpu_avalon_RAM (
   end
 
   integer waittime;
-  // initialise registers
+  // initialise values
   initial begin
     waitrequest = 0;
     readdata = 0;
@@ -39,7 +39,7 @@ module mips_cpu_avalon_RAM (
 
   //start wait request if reading or writing
   always_ff @(posedge read or posedge write) begin
-    waittime <= 1;
+    waittime <= $urandom % 6;
   end
 
   always_comb begin
