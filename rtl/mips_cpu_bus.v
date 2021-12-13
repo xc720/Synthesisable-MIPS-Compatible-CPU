@@ -121,7 +121,7 @@ module mips_cpu_bus (
   //implementing main multiplexers
   assign address = iord ? alu_result : pc_value;
   assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_dest : reg_source_2;
-  assign to_reg_write = memtoreg ? mem_reg_current : alu_result;
+  assign to_reg_write = memtoreg ? readdata : alu_result;
   assign alu_in_a = alusrca ? read_reg_a_current : pc_value;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
   assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
@@ -129,7 +129,6 @@ module mips_cpu_bus (
 
   //implementing all single registers
   always_ff @(posedge clk) begin
-    mem_reg_current <= readdata;
     read_reg_a_current <= read_reg_1;
     read_reg_b_current <= read_reg_2;
     if (jumpconen) begin

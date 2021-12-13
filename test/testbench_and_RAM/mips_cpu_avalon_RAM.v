@@ -30,39 +30,43 @@ module mips_cpu_avalon_RAM (
   end
 
   integer waittime;
-  // initialise registers
+  // initialise values
   initial begin
     waitrequest = 0;
     readdata = 0;
-
-    waittime = $urandom_range(0, 5);
+    waittime = 0;
   end
 
   //start wait request if reading or writing
   always_ff @(posedge read or posedge write) begin
-    waitrequest <= 1;
+    waittime <= $urandom % 6;
+  end
+
+  always_comb begin
+    if (waittime != 0) begin
+      waitrequest = 1;
+    end else begin
+      waitrequest = 0;
+    end
   end
 
   always_ff @(posedge clk) begin
-    if (waitrequest) begin  // if in waitrequest
-      if (waittime > 0) begin
-        waittime <= waittime - 1;
-      end else begin
-        if (read) begin
-          readdata[31:24] <= byteenable[3] ? memory[sim_address][31:24] : 0;
-          readdata[23:16] <= byteenable[2] ? memory[sim_address][23:16] : 0;
-          readdata[15:8]  <= byteenable[1] ? memory[sim_address][15:8] : 0;
-          readdata[7:0]   <= byteenable[0] ? memory[sim_address][7:0] : 0;
-        end else if (write) begin
-          memory[sim_address][31:24] <= (byteenable[3] ? writedata[31:24] : memory[sim_address][31:24]);
-          memory[sim_address][23:16] <= (byteenable[2] ? writedata[23:16] : memory[sim_address][23:16]);
-          memory[sim_address][15:8] <= (byteenable[1] ? writedata[15:8] : memory[sim_address][15:8]);
-          memory[sim_address][7:0] <= (byteenable[0] ? writedata[7:0] : memory[sim_address][7:0]);
-        end
-        waittime <= 1;  //change to random for better test
-        waitrequest <= 0;
+    if (!waitrequest) begin
+      if (read) begin
+        readdata[31:24] <= byteenable[3] ? memory[sim_address][31:24] : 0;
+        readdata[23:16] <= byteenable[2] ? memory[sim_address][23:16] : 0;
+        readdata[15:8]  <= byteenable[1] ? memory[sim_address][15:8] : 0;
+        readdata[7:0]   <= byteenable[0] ? memory[sim_address][7:0] : 0;
+      end else if (write) begin
+        memory[sim_address][31:24] <= (byteenable[3] ? writedata[31:24] : memory[sim_address][31:24]);
+        memory[sim_address][23:16] <= (byteenable[2] ? writedata[23:16] : memory[sim_address][23:16]);
+        memory[sim_address][15:8] <= (byteenable[1] ? writedata[15:8] : memory[sim_address][15:8]);
+        memory[sim_address][7:0] <= (byteenable[0] ? writedata[7:0] : memory[sim_address][7:0]);
       end
+    end else begin
+      waittime <= waittime - 1;
     end
+
   end
 
 
