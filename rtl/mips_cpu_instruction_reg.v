@@ -33,6 +33,12 @@ module mips_cpu_instruction_reg (
     end
   end
 
+  always_comb begin
+    if (state == 2) begin
+      instruction = memory_output;
+    end
+  end
+
   assign control_input = instruction[31:26];
   assign source_1 = instruction[25:21];
   assign source_2 = instruction[20:16];
