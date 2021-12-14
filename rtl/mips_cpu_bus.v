@@ -72,8 +72,8 @@ module mips_cpu_bus (
       jump,
       jumpconen;
 
-  logic [1:0] pcsource, regdst, shiftdata, loadtype;
-  logic [2:0] alusrcb;
+  logic [1:0] pcsource, regdst, shiftdata;
+  logic [2:0] alusrcb, loadtype;
   logic [3:0] aluop;
 
   //variables for state machine
@@ -115,7 +115,7 @@ module mips_cpu_bus (
   //assigns for load instrutions
   assign reg_write_data = to_reg_write >> (8 * shiftdata);
   assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;
-  assign final_reg_write_data = loadtype[1] ? loadtype[0] ? loadlorloadr ? to_reg_write >> (8*(3 - shiftdata)) : to_reg_write << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
+  assign final_reg_write_data = loadtype[2] ? reg_write_data : loadtype[1] ? loadtype[0] ? loadlorloadr ? to_reg_write >> (8*(3 - shiftdata)) : to_reg_write << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
 
 
   //implementing main multiplexers
