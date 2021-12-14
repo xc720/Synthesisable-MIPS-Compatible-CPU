@@ -5,8 +5,8 @@ green=`tput setaf 2`
 blue=`tput setaf 4`
 magenta=`tput setaf 5`
 reset=`tput sgr0`
-#mkdir ./testbench_and_RAM/compiled_results
-#mkdir ./assembler/hexadecimal
+#mkdir ./test/testbench_and_RAM/compiled_results
+#mkdir ./test/assembler/hexadecimal
 
 RTLDR=$1
 INSTRCTN=${2:-all}
