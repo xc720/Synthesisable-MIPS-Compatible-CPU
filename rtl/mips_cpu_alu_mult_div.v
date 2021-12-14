@@ -12,24 +12,19 @@ module mips_cpu_alu_mult_div (
   logic [31:0] signed_a, signed_b, unsigned_a, unsigned_b, div_u, div, rem_u, rem;
   logic [63:0] mult_u, mult;
 
-  //assign sign_a = a[31];
-  //assign sign_b = b[31];
-
   always_comb begin
-    signed_a = $signed(a);
-    signed_b = $signed(b);
-    unsigned_a = $unsigned(a);
-    unsigned_b = $unsigned(b);
 
-    div_u = unsigned_a / unsigned_b;
-    rem_u = unsigned_a % unsigned_b;
-    mult_u = unsigned_a * unsigned_b;
+    div_u = $unsigned(a) / $unsigned(b);
+    rem_u = $unsigned(a) % $unsigned(b);
+    mult_u = $unsigned(a) * $unsigned(b);
 
-    div = signed_a / signed_b;
-    rem = signed_a % signed_b;
-    mult = signed_a * signed_b;
+    div = $signed(a)/ $signed(b);
+    rem = $signed(a) % $signed(b);
+    mult = $signed(a) * $signed(b);
+
 
   end
+
 
   always_ff @(posedge clk) begin
 
@@ -51,8 +46,8 @@ module mips_cpu_alu_mult_div (
           lo <= div[31:0];  //DIV
         end
         3'b011: begin
-          hi<= mult[63:32];
-          lo <= mult[31:0];  //MULT
+          hi <= $signed(mult[63:32]);
+          lo <= $signed(mult[31:0]);  //MULT
         end
         3'b100: hi <= a;  //MTHI
         3'b101: lo <= a;  //MTLO

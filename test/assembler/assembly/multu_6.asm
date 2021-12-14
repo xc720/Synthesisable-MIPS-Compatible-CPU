@@ -1,5 +1,5 @@
-ADDIU $a0, $a0, 55555
-ADDIU $a1, $a1, 44444
+ADDIU $a0, $a0, 555
+ADDIU $a1, $a1, 444
 MULTU $a0, $a1
 MFLO $v0
 MFHI $a2
