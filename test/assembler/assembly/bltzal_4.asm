@@ -4,5 +4,5 @@ NOP
 ADDIU $v0, $v0, 60
 ADDIU $v0, $v0, 100
 SmallerZero:
-ADDU $v0, $v0, 3
-JR $SmallerZero
+ADDIU $v0, $v0, 3
+JR $zero
