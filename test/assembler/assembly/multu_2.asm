@@ -4,4 +4,4 @@ MULTU $a0, $a1               #
 MFLO $a3                    #
 MULTU $a3, $a1               #
 MFHI $v0                    #
-JR $zero                    #v0=8197
+JR $zero                    #v0=8191

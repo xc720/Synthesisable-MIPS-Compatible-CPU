@@ -26,7 +26,7 @@ for f in *.asm; do
     rm $f.out
     cd ../../testbench_and_RAM
     start=$(date +%s.%N)
-    iverilog -Wall -g 2012 -o tb.out ../../rtl/*.v mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"../assembler/hexadecimal/$f.txt\" >/dev/null && ./tb.out >/dev/null || true
+    iverilog -Wall -g 2012 -o tb.out ../../rtl/*.v mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"../assembler/hexadecimal/$f.txt\" >/dev/null && ./tb.out  >/dev/null|| true
     dur=$(echo "$(date +%s.%N) - $start" | bc)
     rm tb.out
     cd compiled_results

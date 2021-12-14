@@ -4,6 +4,5 @@ BGEZAL $a1, GreaterEqualZero
 NOP
 ADDIU $v0, $v0, 100
 GreaterEqualZero:
-ADDIU $v0, $v0, 6
 ADDU $v0, $v0, $ra
 JR $zero

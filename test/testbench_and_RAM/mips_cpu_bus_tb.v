@@ -47,8 +47,8 @@ module mips_cpu_bus_tb;
   // generate clock
   initial begin
     // $timeformat(-9, 1, " ns", 20);
-    resultfile = $fopen("./compiled_results/result.txt", "w");
-    $dumpfile("mips_cpu_bus_tb.vcd");
+    resultfile = $fopen("./test/testbench_and_RAM/compiled_results/result.txt", "w");
+    $dumpfile("./test/testbench_and_RAM/mips_cpu_bus_tb.vcd");
     $dumpvars(0, mips_cpu_bus_tb);
     clk = 0;
 
