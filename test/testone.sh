@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="bgezal_7.asm"
+f="bgezal_8.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
@@ -70,5 +70,9 @@ fi
   fi
 
 # Removes temp directories
+<<<<<<< HEAD
 # rm -r $hex
+=======
+#rm -r $hex
+>>>>>>> 3aa77be5165f629daa0648811bd6940f86a3b229
 rm -r $compiled_results
