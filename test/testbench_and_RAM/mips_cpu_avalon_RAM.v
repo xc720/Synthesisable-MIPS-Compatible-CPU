@@ -39,7 +39,7 @@ module mips_cpu_avalon_RAM (
 
   //start wait request if reading or writing
   always_ff @(posedge read or posedge write) begin
-    waittime <= $urandom % 6;
+    waittime <= 1;  //$urandom % 6;
   end
 
   always_comb begin
