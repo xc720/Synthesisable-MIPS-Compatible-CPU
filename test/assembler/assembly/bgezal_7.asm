@@ -5,5 +5,5 @@ NOP
 ADDIU $v0, $v0, 100
 GreaterEqualZero:
 ADDIU $v0, $v0, 6
-ADDU $v0, $v0, $ra
+ADDU $v0, $v0, $zero
 JR $zero
