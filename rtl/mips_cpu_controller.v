@@ -54,7 +54,7 @@ module mips_cpu_controller (
     end else if (state == 1) begin  //fetch     
       regwrite = 0;
       iord = 0;
-      irwrite = 1;
+      irwrite = 0;
       pcwrite = !waitrequest;
       pcsource = 0;
       pcwritecond = 0;
@@ -70,12 +70,13 @@ module mips_cpu_controller (
       muldivwrite = 0;
     end else if (state == 2) begin  //decode
       regwrite = 0;
-      irwrite = 0;
+      irwrite = 1;
       pcwrite = 0;
       pcwritecond = 0;
       jump = 0;
       memread = 0;
       memwrite = 0;
+      byteenable = 4'b1111;
       aluop = 0;
       alusrca = 0;
       alusrcb = 3;
