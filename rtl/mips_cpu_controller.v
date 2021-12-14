@@ -8,7 +8,7 @@ module mips_cpu_controller (
 
     output logic [1:0] regdst,
     output logic [1:0] shiftload,
-    output logic [1:0] loadtype,
+    output logic [2:0] loadtype,
     output logic loadlorloadr,
     output logic regwrite,
     output logic orwrite,
@@ -369,7 +369,7 @@ module mips_cpu_controller (
         6'h20, 6'h21, 6'h22, 6'h23, 6'h24, 6'h25, 6'h26: begin  //LB, LH, LWL, LW, LBU, LHU, LWR
           regdst = 0;
           shiftdata = memoryadress % 4;
-          loadtype = (opcode == 6'h22 || opcode == 6'h26) ? 3 : (opcode == 6'h20 || opcode == 6'h21 || opcode == 6'h23) ? 1 : 0;
+          loadtype = (opcode == 6'h24 || opcode == 6'h25) ? 4 : (opcode == 6'h22 || opcode == 6'h26) ? 3 : (opcode == 6'h20 || opcode == 6'h21 || opcode == 6'h23) ? 1 : 0;
           loadlorloadr = opcode == 6'h26;
           regwrite = exec2;
           orwrite = opcode == 6'h22 || opcode == 6'h26;
