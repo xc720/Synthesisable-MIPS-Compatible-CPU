@@ -9,20 +9,8 @@ module mips_cpu_alu_mult_div (
     output logic [31:0] hi, lo
 );
 
-function sign_extend;
-  input a;
-  begin
-    sign_extend = ($bits(a) % 4 == 0 ? (a[$bits(a)-1] ? ((allones << $bits(a)) + a) : $signed(a)) : $signed(a));
-  end
-endfunction
-
-  logic [31:0] signed_a, signed_b, unsigned_a, unsigned_b, div_u, div, rem_u, rem, allones;
+  logic [31:0] signed_a, signed_b, unsigned_a, unsigned_b, div_u, div, rem_u, rem;
   logic [63:0] mult_u, mult;
-  assign sign_a = a[31];
-  assign sign_b = b[31];
-  assign bitsa = $bits(a);
-  assign bitsb = $bits(b);
-  assign allones = 32'hffffffff;
 
   always_comb begin
 
