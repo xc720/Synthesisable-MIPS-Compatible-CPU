@@ -19,8 +19,8 @@ if [ ! -d $1 ]; then
 fi
 
 # Create temp directories
-mkdir $compiled_results || true
-mkdir $hex || true
+mkdir -p $compiled_results || true
+mkdir -p $hex || true
 
 # Check if instruction has been specified
 if [ "$INSTRCTN" != "all" ]; then
@@ -69,5 +69,5 @@ for f in $assembly/*.asm; do
   fi
 done
 # Removes temp directories
-#rm -r $hex
+rm -r $hex
 rm -r $compiled_results
