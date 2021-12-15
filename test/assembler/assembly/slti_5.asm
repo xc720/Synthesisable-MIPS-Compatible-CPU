@@ -1,3 +1,4 @@
-LUI $a0, 0xffff         # a0 = -65536
-SLTI $v0, $a0, 0xffff   # v0 = -65536 <= -1 = 0
+LUI $a0, 10      # a0 = 1
+SLTI $v0, $a0, 10    # v0 = 1 <= -1 = 0
+XORI $v0, $v0, 31
 JR $zero

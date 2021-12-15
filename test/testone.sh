@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="bgezal_8.asm"
+f="sb_7.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
