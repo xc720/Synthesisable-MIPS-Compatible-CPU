@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="sb_7.asm"
+f="supertest.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
