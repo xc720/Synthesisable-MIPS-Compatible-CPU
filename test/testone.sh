@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="supertest.asm"
+f="lb_10.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
@@ -43,7 +43,7 @@ fi
 
  
   # Assembles the test cases to machine hex code
-  mips-linux-gnu-as --no-warn -o $hex/$f.out $assembly/$f
+  mips-linux-gnu-as --no-warn -EL -o $hex/$f.out $assembly/$f
   mips-linux-gnu-readelf --hex-dump=.text $hex/$f.out | sed -n -e '/0x00000000/,$p' | sed 's/^ *0x//g' | xxd -r | xxd -p -c 10000000000 | sed 's/.\{8\}/& /g' > $hex/$f.txt
   rm $hex/$f.out
   
