@@ -1,3 +1,4 @@
-ADDIU $a0, $a0, 1       # a0 = 1
-SLTI $v0, $a0, 65535    # v0 = 1 <= -1 = 0
+ADDIU $a0, $a0, 10       # a0 = 1
+SLTI $v0, $a0, 10    # v0 = 1 <= -1 = 0
+XORI $v0, $v0, 15
 JR $zero
