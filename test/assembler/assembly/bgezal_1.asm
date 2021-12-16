@@ -1,6 +1,5 @@
 ADDIU $a0, $a0, 19
 BGEZAL $a0, GreaterEqualZero
-NOP
 ADDIU $v0, $v0, 80      
 ADDIU $v0, $v0, 100     
 GreaterEqualZero:

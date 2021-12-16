@@ -83,5 +83,5 @@ for f in $assembly/*.asm; do
   fi
 done
 # Removes temp directories
-rm -r $hex
+#rm -r $hex
 rm -r $compiled_results
