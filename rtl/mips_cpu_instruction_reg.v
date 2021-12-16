@@ -27,24 +27,27 @@ module mips_cpu_instruction_reg (
   logic [31:0] instruction;
 
   logic [31:0] instructiondecode;
+  logic [31:0] instructionloaded;
 
   assign instructiondecode = memory_output;
 
   always_ff @(posedge clk) begin
     if (enable == 1 || state == 0) begin
       /*assume we open instruction register in state 0 */
-      instruction <= memory_output;
+      instructionloaded <= memory_output;
     end
   end
 
-  assign control_input = state == 2 ? instructiondecode[31:26] : instruction[31:26];
-  assign source_1 = state == 2 ? instructiondecode[25:21] : instruction[25:21];
-  assign source_2 = state == 2 ? instructiondecode[20:16] : instruction[20:16];
-  assign dest = state == 2 ? instructiondecode[15:11] : instruction[15:11];
-  assign immediate = state == 2 ? instructiondecode[15:0] : instruction[15:0];
-  assign jmp_address = state == 2 ? instructiondecode[25:0] : instruction[25:0];
-  assign funct = state == 2 ? instructiondecode[5:0] : instruction[5:0];
-  assign shamt = state == 2 ? instructiondecode[10:6] : instruction[10:6];
+  assign instruction = state == 2 ? instructiondecode : instructionloaded;
+
+  assign control_input = instruction[31:26];
+  assign source_1 = instruction[25:21];
+  assign source_2 = instruction[20:16];
+  assign dest = instruction[15:11];
+  assign immediate = instruction[15:0];
+  assign jmp_address = instruction[25:0];
+  assign funct = instruction[5:0];
+  assign shamt = instruction[10:6];
 
 
 endmodule
