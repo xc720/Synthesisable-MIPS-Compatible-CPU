@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="lwl_3.asm"
+f="lwr_3.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM

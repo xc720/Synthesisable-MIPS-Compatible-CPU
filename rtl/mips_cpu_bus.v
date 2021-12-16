@@ -211,6 +211,8 @@ module mips_cpu_bus (
       .state(state),
       .threestate(threestate),
       .orwrite(orwrite),
+      .shiftdata(shiftdata),
+      .loadlorloadr(loadlorloadr),
       .write_enable(regwrite),
       .read_reg_1(reg_source_1),
       .read_reg_2(reg_source_2),
