@@ -47,7 +47,7 @@ for f in $assembly/*.asm; do
   rm $hex/$f.out
   
   # Runs MIPS iverilog with hex code into test bench
-  iverilog -Wall -g 2012 -o $tbRAM/tb.out $RTLDR/*.v $tbRAM/mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"$hex/$f.txt\" >/dev/null && ./$tbRAM/tb.out >/dev/null
+  iverilog -Wall -g 2012 -o $tbRAM/tb.out $RTLDR/*.v $tbRAM/mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"$hex/$f.txt\" 2> /dev/null && ./$tbRAM/tb.out >/dev/null || true
   rm $tbRAM/tb.out
 
   sed -i "s/ //g" $compiled_results/result.txt                      # Removes whitespace
