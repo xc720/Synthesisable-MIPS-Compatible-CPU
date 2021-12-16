@@ -9,4 +9,4 @@ ADDIU $v0, $v0, 34
 ADDIU $v0, $v0, 18
 ADDU $v0, $v0, $ra
 ADDU $v0, $v0, $t2 
-JR $0               #$v0=10+0xBFC00008+24+
+JR $0               #$v0=10+0xBFC00000*2+24+32+=
