@@ -129,8 +129,9 @@ module mips_cpu_bus (
   assign to_reg_write = memtoreg ? readdata : alu_result;
   assign alu_in_a = alusrca ? read_reg_a_current : pc_value;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
-  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
+  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], jmp_address, 2'b00}) : (pcsource[0] ? alu_out: alu_result);
   assign pc_address_in = jumpcondreg ? jumpdestreg : increment_pc;
+
 
   //implementing all single registers
   always_ff @(posedge clk) begin
