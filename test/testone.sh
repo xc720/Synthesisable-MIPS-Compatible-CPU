@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="factorial_1.asm"
+f="jalr_3.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
