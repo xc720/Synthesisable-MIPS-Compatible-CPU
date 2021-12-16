@@ -6,13 +6,13 @@ module mips_cpu_alu_control (
 );
   always_comb begin
     case (aluOp)
-      4'b0000: begin 
+      4'b0000: begin
         toMult = 0;
-        toAlu = 5'b00000;  // add
+        toAlu  = 5'b00000;  // add
       end
       4'b0001: begin
         toMult = 0;
-        toAlu = 5'b00011;  // subtract
+        toAlu  = 5'b00011;  // subtract
       end
       4'b0010: begin
         toMult = 0;
@@ -35,27 +35,27 @@ module mips_cpu_alu_control (
 
       4'b0011: begin
         toMult = 0;
-        toAlu = 5'b10010;  // BEQ
+        toAlu  = 5'b10010;  // BEQ
       end
       4'b0100: begin
         toMult = 0;
-        toAlu = 5'b01101;  // BGEZ
+        toAlu  = 5'b01101;  // BGEZ
       end
       4'b0101: begin
         toMult = 0;
-        toAlu = 5'b01110;  // BGTZ
+        toAlu  = 5'b01110;  // BGTZ
       end
       4'b0110: begin
         toMult = 0;
-        toAlu = 5'b01111;  // BLEZ
+        toAlu  = 5'b01111;  // BLEZ
       end
       4'b0111: begin
         toMult = 0;
-        toAlu = 5'b10000;  // BLTZ
+        toAlu  = 5'b10000;  // BLTZ
       end
       4'b1000: begin
         toMult = 0;
-        toAlu = 5'b10001;  // BNE
+        toAlu  = 5'b10001;  // BNE
       end
       // MULT, DIV etc.
       4'b1001:
@@ -73,23 +73,23 @@ module mips_cpu_alu_control (
       // for I type instructions
       4'b1010: begin
         toMult = 0;
-        toAlu = 5'b00001;  // ANDI
+        toAlu  = 5'b00001;  // ANDI
       end
       4'b1011: begin
         toMult = 0;
-        toAlu = 5'b00010;  // ORI
+        toAlu  = 5'b00010;  // ORI
       end
       4'b1100: begin
         toMult = 0;
-        toAlu = 5'b01100;  // XORI
+        toAlu  = 5'b01100;  // XORI
       end
       4'b1101: begin
         toMult = 0;
-        toAlu = 5'b00100;  // SLTI
+        toAlu  = 5'b00100;  // SLTI
       end
       4'b1110: begin
         toMult = 0;
-        toAlu = 5'b00101;  // SLTUI
+        toAlu  = 5'b00101;  // SLTUI
       end
 
       default: begin
