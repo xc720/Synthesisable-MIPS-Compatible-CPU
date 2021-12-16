@@ -35,7 +35,7 @@ module mips_cpu_alu (
     end else begin
       case (alu_func)
         5'b00000:
-        result = $unsigned(a) + $unsigned(b);  // ADDU  (immediate or not determined elsewhere)
+        result = a + b; // ADDU (immediate or not determined elsewhere)  // ADDU  (immediate or not determined elsewhere)
         5'b00001: result = a & b;  // AND
         5'b00010: result = a | b;  // OR
         5'b00011: result = $unsigned(a) - $unsigned(b);  // SUBU
