@@ -193,6 +193,19 @@ module mips_cpu_controller (
               aluouten = 1;
               muldivwrite = 1;
             end
+            default: begin
+              regwrite = 0;
+              iord = 0;
+              irwrite = 0;
+              pcwrite = 0;
+              pcwritecond = 0;
+              jump = 0;
+              jumpconen = 0;
+              memread = 0;
+              memwrite = 0;
+              aluouten = 0;
+              muldivwrite = 0;
+            end
           endcase
         end
         6'h1: begin  //REGIMM     BLTZ, BLTZAL, BGEZ, BGEZAL
@@ -427,6 +440,19 @@ module mips_cpu_controller (
           alusrca = 1;
           alusrcb = 2;
           aluouten = 1;
+          muldivwrite = 0;
+        end
+        default: begin
+          regwrite = 0;
+          iord = 0;
+          irwrite = 0;
+          pcwrite = 0;
+          pcwritecond = 0;
+          jump = 0;
+          jumpconen = 0;
+          memread = 0;
+          memwrite = 0;
+          aluouten = 0;
           muldivwrite = 0;
         end
       endcase
