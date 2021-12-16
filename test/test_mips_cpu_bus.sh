@@ -1,6 +1,5 @@
 #!/bin/bash
 set -eou pipefail
-
 # Set paths
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
@@ -16,6 +15,21 @@ INSTRCTN=${2:-all}
 if [ ! -d $1 ]; then
   echo -e "Invalid RTL Dir: $1"
   exit
+fi
+
+# Checks if RTL folders are in multiple places
+count=`ls $RTLDR/*.v 2>/dev/null | wc -l` || true             # Counts .v files in RTL
+count1=`ls $RTLDR/mips_cpu/*.v 2>/dev/null | wc -l` || true   # Counts .v files in RTL/mips_cpu
+
+if [[ $count != 0 && $count1 != 0 ]]; then    # BOTH folders
+  RTLDR=$1/*.v
+  RTLDR1=$1/mips_cpu/*.v
+elif [[ $count != 0 && $count1 == 0 ]]; then  # Main folder ONLY
+  RTLDR=$1/*.v
+  RTLDR1=""
+elif [[ $count == 0 && $count1 != 0 ]]; then  # Sub folder ONLY
+  RTLDR=$1/mips_cpu/*.v
+  RTLDR1=""
 fi
 
 # Create temp directories
@@ -47,7 +61,7 @@ for f in $assembly/*.asm; do
   rm $hex/$f.out
   
   # Runs MIPS iverilog with hex code into test bench
-  iverilog -Wall -g 2012 -o $tbRAM/tb.out $RTLDR/*.v $tbRAM/mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"$hex/$f.txt\" >/dev/null && ./$tbRAM/tb.out >/dev/null
+  iverilog -Wall -g 2012 -o $tbRAM/tb.out $RTLDR $RTLDR1 $tbRAM/mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"$hex/$f.txt\" >/dev/null && ./$tbRAM/tb.out >/dev/null || true
   rm $tbRAM/tb.out
 
   sed -i "s/ //g" $compiled_results/result.txt                      # Removes whitespace
