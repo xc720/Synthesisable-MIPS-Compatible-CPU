@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="addiu_4.asm"
+f="jalr_3.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
@@ -70,5 +70,5 @@ fi
   fi
 
 # Removes temp directories
-rm -r $hex
+#rm -r $hex
 rm -r $compiled_results

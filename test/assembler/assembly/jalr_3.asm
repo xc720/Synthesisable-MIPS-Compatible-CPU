@@ -7,6 +7,6 @@ ADDIU $ra, $ra, 24
 JALR $t2, $ra
 ADDIU $v0, $v0, 34
 ADDIU $v0, $v0, 18
-ADDU $v0, $v0, $ra
-ADDU $v0, $v0, $t2 
-JR $0               #$v0=10+0xBFC00000*2+24+32+=
+ADDU $v0, $v0, $t2
+SUBU $v0, $v0, $ra 
+JR $0               #$v0=10 - 0xbfc0008 - 24 + 0xbfc00000 + 28
