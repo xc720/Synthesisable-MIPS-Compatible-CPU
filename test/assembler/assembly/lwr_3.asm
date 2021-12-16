@@ -1,6 +1,7 @@
-LUI $a0, 1024               #
-ADDIU $a0, $a0, 128         #a0 = 0x4000080
-ADDIU $a1, $a1, 256         #a1 = 0x100
-SW $a0, 0($a1)              #mem(256) = 0x4000080
-LWR $v0, 3($a1)            #v0 = 0x04000080
-JR $zero                    #
+LUI $a0, 0x1020           #
+ADDIU $a0, $a0, 0x3040     #a0 = 0x10203040
+ADDIU $a1, $a1, 256     #a1 = 0x256
+SW $a0, 0($a1)          #mem(256) = 0x40302010
+LUI $v0, 0x0102
+LWR $v0, 1($a1)        #v0 = 0x01021020
+JR $zero               

@@ -14,6 +14,9 @@ module mips_cpu_bus (
     output logic [3:0] byteenable,
     input logic [31:0] readdata
 );
+  logic [31:0] dataflipped;
+  assign dataflipped = {{readdata[07:00]}, {readdata[15:08]}, {readdata[23:16]}, {readdata[31:24]}};
+
 
   //variables for pc
   logic [31:0] pc_address_in, pc_value;
@@ -72,7 +75,7 @@ module mips_cpu_bus (
       jump,
       jumpconen;
 
-  logic [1:0] pcsource, regdst, shiftdata;
+  logic [1:0] pcsource, regdst, shiftdata, endiantype;
   logic [2:0] alusrcb, loadtype;
   logic [3:0] aluop;
 
@@ -110,12 +113,14 @@ module mips_cpu_bus (
   assign zero_extended_immediate = {16'h0000, immediate};
 
   //assign where to write to memory from and shifting correct bits to match endians
-  assign writedata = read_reg_b_current << (8 * shiftdata);
+  assign writedata = endiantype[1] ? {{read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}, {read_reg_b_current[23:16]}, {read_reg_b_current[31:24]}} : endiantype[0] ? {{read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}, {read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}} : read_reg_b_current << (8 * shiftdata);
 
   //assigns for load instrutions
-  assign reg_write_data = to_reg_write >> (8 * shiftdata);
+  logic [31:0] fixed_endian_reg_write_data;
+  assign fixed_endian_reg_write_data = endiantype[1] ? {{to_reg_write[07:00]}, {to_reg_write[15:08]}, {to_reg_write[23:16]}, {to_reg_write[31:24]}} : endiantype[0] ? {{to_reg_write[23:16]}, {to_reg_write[31:24]}, {to_reg_write[07:00]}, {to_reg_write[15:08]}} : to_reg_write;
+  assign reg_write_data = fixed_endian_reg_write_data >> (8 * shiftdata);
   assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;
-  assign final_reg_write_data = loadtype[2] ? reg_write_data : loadtype[1] ? loadtype[0] ? loadlorloadr ? to_reg_write >> (8*(3 - shiftdata)) : to_reg_write << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : to_reg_write;
+  assign final_reg_write_data = loadtype[2] ? reg_write_data : loadtype[1] ? loadtype[0] ? loadlorloadr ? fixed_endian_reg_write_data >> (8*(3 - shiftdata)) : fixed_endian_reg_write_data << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : fixed_endian_reg_write_data;
 
 
   //implementing main multiplexers
@@ -124,8 +129,9 @@ module mips_cpu_bus (
   assign to_reg_write = memtoreg ? readdata : alu_result;
   assign alu_in_a = alusrca ? read_reg_a_current : pc_value;
   assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
-  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], (jmp_address << 2)}) : (pcsource[0] ? alu_out: alu_result);
+  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], jmp_address, 2'b00}) : (pcsource[0] ? alu_out: alu_result);
   assign pc_address_in = jumpcondreg ? jumpdestreg : increment_pc;
+
 
   //implementing all single registers
   always_ff @(posedge clk) begin
@@ -173,6 +179,7 @@ module mips_cpu_bus (
       .pcwritecond(pcwritecond),
       .memread(read),
       .memwrite(write),
+      .endiantype(endiantype),
       .shiftdata(shiftdata),
       .byteenable(byteenable),
       .memtoreg(memtoreg),
@@ -187,7 +194,7 @@ module mips_cpu_bus (
       .clk(clk),
       .enable(ir_write),
       .state(state),
-      .memory_output(readdata),
+      .memory_output(dataflipped),
       .control_input(opcode),  //instruction[31-26]
       .source_1(reg_source_1),  // instruction[25:21] 
       .source_2(reg_source_2),  //instruction[20:16]   
@@ -204,6 +211,8 @@ module mips_cpu_bus (
       .state(state),
       .threestate(threestate),
       .orwrite(orwrite),
+      .shiftdata(shiftdata),
+      .loadlorloadr(loadlorloadr),
       .write_enable(regwrite),
       .read_reg_1(reg_source_1),
       .read_reg_2(reg_source_2),

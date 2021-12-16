@@ -78,7 +78,7 @@ module mips_cpu_bus_tb;
       @(posedge clk);
       if (!active) begin
         #20;
-        $display("CPU HALUTED, register_v0 = %d", register_v0);
+        $display("CPU HALUTED, register_v0 = %h", register_v0);
         $fwrite(resultfile, register_v0);
         $fclose(resultfile);
         $finish;

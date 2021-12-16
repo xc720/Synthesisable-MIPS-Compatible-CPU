@@ -6,6 +6,8 @@ module mips_cpu_register_file (
     input logic [2:0] state,
     input logic threestate,
     input logic orwrite,
+    input logic [1:0] shiftdata,
+    input logic loadlorloadr,
     // dual input read ports & write input ports
     input logic [4:0] read_reg_1,
     input logic [4:0] read_reg_2,
@@ -24,6 +26,10 @@ module mips_cpu_register_file (
   assign read_data_1  = register[read_reg_1];
   assign read_data_2  = register[read_reg_2];
 
+  logic [31:0] finalwritedataleft, finalwritedataright;
+  assign finalwritedataleft = (shiftdata == 3 ? {8'h00, register[write_reg][23:0]} : shiftdata == 2 ? {16'h0000, register[write_reg][15:0]} : shiftdata == 1 ? {24'h000000, register[write_reg][7:0]} : 32'h00000000);
+  assign finalwritedataright = (shiftdata == 0 ? {register[write_reg][31:8], 8'h00} : shiftdata == 1 ? {register[write_reg][31:16], 16'h0000} : shiftdata == 2 ? {register[write_reg][31:24], 24'h000000} : 32'h00000000);
+
   // reset & write
   always_ff @(posedge clk) begin  //TODO: remove dispays and state as an input when done testing
     // reset register
@@ -35,7 +41,7 @@ module mips_cpu_register_file (
       // write to register
       if (write_enable && write_reg != 0) begin
         if (orwrite) begin
-          register[write_reg] <= write_data | register[write_reg];
+          register[write_reg] <= loadlorloadr ? (write_data | finalwritedataright) : (write_data | finalwritedataleft);
         end else begin
           register[write_reg] <= write_data;
         end

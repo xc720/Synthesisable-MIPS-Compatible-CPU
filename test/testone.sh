@@ -2,7 +2,7 @@
 set -eou pipefail
 
 # Set paths
-f="factorial_1.asm"
+f="jalr_3.asm"
 hex=./test/assembler/hexadecimal
 assembly=./test/assembler/assembly
 tbRAM=./test/testbench_and_RAM
@@ -20,8 +20,8 @@ if [ ! -d $1 ]; then
 fi
 
 # Create temp directories
-mkdir $compiled_results || true
-mkdir $hex || true
+mkdir -p $compiled_results || true
+mkdir -p $hex || true
 
 # Check if instruction has been specified
 if [ "$INSTRCTN" != "all" ]; then
@@ -43,7 +43,7 @@ fi
 
  
   # Assembles the test cases to machine hex code
-  mips-linux-gnu-as --no-warn -o $hex/$f.out $assembly/$f
+  mips-linux-gnu-as --no-warn -EL -o $hex/$f.out $assembly/$f
   mips-linux-gnu-readelf --hex-dump=.text $hex/$f.out | sed -n -e '/0x00000000/,$p' | sed 's/^ *0x//g' | xxd -r | xxd -p -c 10000000000 | sed 's/.\{8\}/& /g' > $hex/$f.txt
   rm $hex/$f.out
   
@@ -70,5 +70,5 @@ fi
   fi
 
 # Removes temp directories
-# rm -r $hex
+rm -r $hex
 rm -r $compiled_results
