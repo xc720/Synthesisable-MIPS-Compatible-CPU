@@ -11,7 +11,7 @@ For the test environment, it is assumed to be Ubuntu 18.04. Version 11.0 of Icar
 
 - `build-essential` (g++, make)
 - `git`
-- 'gcc-mips-linux-gnu'
+- `gcc-mips-linux-gnu`
 - `qemu-system-mips`
 - `python3`
 - `cmake`
