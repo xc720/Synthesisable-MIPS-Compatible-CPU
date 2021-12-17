@@ -1,66 +1,39 @@
-module mips_cpu_alu (
-    input logic clk,
-    input logic reset,
-    input logic [2:0] state,
-    input logic [4:0] alu_func,
-    input logic [31:0] a,
-    input logic [31:0] b,
-    input logic [4:0] shift,
-    input logic [2:0] mult_op,
-    input logic write,
+module alu(
+    input logic[31:0]  a,
+    input logic[31:0]  b,
+    input logic[4:0]   as,
+    input logic[4:0]   alu_control,
 
-    output logic [31:0] result,
-    output logic condition
+    output logic[31:0] result,
+    output logic       zero
 );
 
-  logic [31:0] hi, lo;
+always_comb begin
+    case(alu_control)
+        5'b00000: result = a & b; //AND
+        5'b00001: result = a | b; //OR
+        5'b00010: result = a + b; //ADD
+        5'b00110: result = a - b; //SUB
+        5'b00111: result = $unsigned(a) < $unsigned(b); //SLTU (set on less than)
+        5'b01000: result = $signed(a)<$signed(b); // SLT
+        5'b01001: result = b << as; // SLL
+        5'b01010: result = $signed(b) >>> as; // SRA
+        5'b01011: result = b >> as; // SRL 
+        5'b01100: result = ~(a | b);//NOR
+        5'b01101: result = a ^ b; //XOR
+        5'b01110: result = b << a; // SLLV
+        5'b01111: result = $signed(b) >>> a; // SRAV
+        5'b10000: result = b >> a; // SRLV
 
-  mips_cpu_alu_mult_div alu_mult (
-      .a(a),
-      .b(b),
-      .op(mult_op),
-      .clk(clk),
-      .write(write),
-      .reset(reset),
-      .hi(hi),
-      .lo(lo)
-  );
+        5'b11000: result = (a != b) ? 0:1; //BNE(set on equal)
+        5'b11001: result = ($signed(a) > 0) ? 0:1; //BGTZ(set on if a greater than 0)
+        5'b11010: result = ($signed(a) <= 0) ? 0:1; //BLEZ(set on if a less than or equal to 0)
+        5'b11011: result = ($signed(a) >= 0) ? 0:1; //BGEZ(set on if a greater than or equal to 0)
+        5'b11111: result = ($signed(a) < 0) ? 0:1; //BLTZ(set on if a less than 0)
+        default: result = 0;
+    endcase
+end
 
-  always_comb begin
-
-    if (mult_op == 3'b110 && state == 3) begin
-      result = hi;
-    end else if (mult_op == 3'b111 && state == 3) begin
-      result = lo;
-    end else begin
-      case (alu_func)
-        5'b00000: result = a + b;  // ADDU  (immediate or not determined elsewhere)
-        5'b00001: result = a & b;  // AND
-        5'b00010: result = a | b;  // OR
-        5'b00011: result = $unsigned(a) - $unsigned(b);  // SUBU
-        5'b00100: result = $signed(a) < $signed(b);  // SLT
-        5'b00101: result = $unsigned(a) < $unsigned(b);  // SLTU
-        5'b00110: result = (b << shift);  // SLL
-        5'b00111: result = b << a;  // SLLV
-        5'b01000: result = b >> shift;  // SRL
-        5'b01001: result = b >> a;  // SRLV
-        5'b01010: result = $signed(b) >>> shift;  // SRA
-        5'b01011: result = $signed(b) >>> a;  // SRAV
-        5'b01100: result = a ^ b;  // XOR
-
-        //branch conditions
-        5'b10010: result = (a == b);  // BEQ
-        5'b01101: result = $signed(a) >= 0;  // BGEZ (and link?)
-        5'b01110: result = $signed(a) > 0;  // BGTZ
-        5'b01111: result = $signed(a) <= 0;  // BLEZ
-        5'b10000: result = $signed(a) < 0;  // BLTZ (and link?)
-        5'b10001: result = (a != b);  // BNE
-        default:  result = 0;
-      endcase
-    end
-  end
-
-
-  assign condition = (result == 1);
+assign zero = (result == 0);
 
 endmodule

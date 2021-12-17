@@ -51,7 +51,6 @@ module mips_cpu_avalon_RAM (
   end
 
   always_ff @(posedge clk) begin
-    waittime <= $urandom % 5;  //tests cpu does not stall if it isn't reading or writing even if wait request is high
     if (!waitrequest) begin
       if (read) begin
         readdata[31:24] <= byteenable[3] ? memory[sim_address][31:24] : 0;

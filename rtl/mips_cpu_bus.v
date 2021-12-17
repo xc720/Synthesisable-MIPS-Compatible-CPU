@@ -1,246 +1,285 @@
-module mips_cpu_bus (
+module mips_cpu_bus(
     /* Standard signals */
     input logic clk,
     input logic reset,
     output logic active,
-    output logic [31:0] register_v0,
+    output logic[31:0] register_v0,
 
-    /* Avalon memory mapped bus controller */
-    output logic [31:0] address,
+    /* Avalon memory mapped bus controller (master) */
+    output logic[31:0] address,
     output logic write,
     output logic read,
     input logic waitrequest,
-    output logic [31:0] writedata,
-    output logic [3:0] byteenable,
-    input logic [31:0] readdata
+    output logic[31:0] writedata,
+    output logic[3:0] byteenable,
+    input logic[31:0] readdata
 );
-  //variables for pc
-  logic [31:0] pc_address_in, pc_value;
 
-  //variables for alu (need to add in the alu_control)
-  logic [31:0] alu_result, alu_in_a, alu_in_b, alu_out;
-  logic condition;
-
-  //variables for alu control
-  logic [4:0] toalu;
-  logic [2:0] tomult;
-
-  //variables for A and B registers
-  logic [31:0] read_reg_a_current, read_reg_b_current;
-
-  //variables for memory data register
-  logic [31:0] mem_reg_current;
-
-  //variables for jumps and branching
-  logic jumpcondreg;
-  logic [31:0] jumpdestreg, increment_pc;
-
-  //variables for ir
-  logic [4:0] shift;
-  logic [5:0] opcode, fncode;
-  logic [25:0] jmp_address;
-  logic [15:0] immediate;
-  logic [31:0] sign_extended_immediate;
-  logic [31:0] zero_extended_immediate;
-
-  //variables for register file
-  logic [4:0] reg_source_1, reg_source_2, reg_dest;
-  logic [31:0]
-      to_reg_write,
-      reg_write_data,
-      sign_extended_reg_write_data,
-      final_reg_write_data,
-      read_reg_1,
-      read_reg_2;
-  logic [4:0] reg_write_address;
-
-  //variables for control
-  logic
-      pcwritecond,
-      pcwrite,
-      iord,
-      ir_write,
-      memtoreg,
-      regwrite,
-      alusrca,
-      muldivwrite,
-      threestate,
-      aluouten,
-      orwrite,
-      loadlorloadr,
-      jump,
-      jumpconen;
-
-  logic [1:0] pcsource, regdst, shiftdata, endiantype;
-  logic [2:0] alusrcb, loadtype;
-  logic [ 3:0] aluop;
-
-  //variables for state machine
-  logic [ 2:0] state;
-
-  //varibles for memory endian conversion
-  logic [31:0] fixed_endian_reg_write_data;
-  logic [31:0] dataflipped;
-
-  //initial conditions
-  initial begin
+// setup state machine
+logic[3:0] state;
+initial begin
     state = 0;
     active = 0;
-    jumpcondreg = 0;
-  end
+end
 
-  //state machine
-  always_ff @(posedge clk) begin
-    if (reset) begin
-      state  <= 1;
-      active <= 1;
-    end else if (pc_value == 0 && (state == 4 || (state == 3 && threestate))) begin
-      state  <= 0;
-      active <= 0;
-    end else if (!waitrequest || (!read && !write)) begin
-      if (state == 4 || (state == 3 && threestate)) begin
-        state <= 1;
-      end else if (!state == 0) begin
-        state <= state + 1;
-      end
+always_ff @(posedge clk) begin // on every clock cycle if waitrequest is low change state
+    // debug code
+    // $display("Instruction: %h", instr, " PC: ", pc_out - 3217031168, " regsiter: %d", write_reg);
+    if(!waitrequest) case(state)
+        0: begin // HALT
+            state <= 1;
+            active <= 1;
+            // $display("Entering FETCH STATE: ");
+        end
+        1: begin // FETCH
+            state <= 2;
+            // $display("Entering DECO STATE: ");
+        end
+        2: begin // DECODE
+            state <= 3;
+            // $display("Entering EXEC1 STATE: ");
+        end
+        3: begin // EXEC1
+            state <= 4;
+            // $display("Entering EXEC2 STATE: ");
+        end
+        4: begin // EXEC2
+            state <= 1;
+            // $display("Entering FETCH STATE: ");
+        end
+    endcase
+end
+
+always_ff @(posedge clk) begin // check if pc is at 0 and terminate
+    if(state!=0 & pc_out == 0) begin
+        active <= 0;
+        state <= 0; // halt
     end
-  end
+end
 
-  //interpreting the readdata from RAM as big endian
-  assign dataflipped = {{readdata[07:00]}, {readdata[15:08]}, {readdata[23:16]}, {readdata[31:24]}};
+//instruction register not yet implemented
+//here I just created a logic 32-bit component as instruction
+logic[31:0] instr, instr_reg;
+logic[31:0] pc_in, pc_out;
+logic pcwrite;
 
-  //sign extending
-  assign sign_extended_immediate = immediate[15] ? {16'hFFFF, immediate} : {16'h0000, immediate};
-  assign zero_extended_immediate = {16'h0000, immediate};
+pc pc_0(
+    .clk(clk),
+    .reset(reset),
+    .pc_in(pc_in),
+    .pcwrite(pcwrite),
+    .pc_out(pc_out)
+);
 
-  //assign where to write to memory from and shifting correct bits to match endians
-  assign writedata = endiantype[1] ? {{read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}, {read_reg_b_current[23:16]}, {read_reg_b_current[31:24]}} : endiantype[0] ? {{read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}, {read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}} : read_reg_b_current << (8 * shiftdata);
+//control unit (not updated yet)
+logic[3:0] ALUOp;
+logic[1:0] div_mult_op;
+logic[2:0] ExtendOp;
+logic bytewrite, halfwrite, ALUSrc, singed_imm, jump, branch, regdst, memtoreg, regwrite, inwrite, pctoadd, regtojump, div_mult_en, div_mult_signed, hitoreg, lotoreg, link, reg_link, loadimmed;
 
-  //assigns for load instrutions
-  assign fixed_endian_reg_write_data = endiantype[1] ? {{to_reg_write[07:00]}, {to_reg_write[15:08]}, {to_reg_write[23:16]}, {to_reg_write[31:24]}} : endiantype[0] ? {{to_reg_write[23:16]}, {to_reg_write[31:24]}, {to_reg_write[07:00]}, {to_reg_write[15:08]}} : to_reg_write;
-  assign reg_write_data = fixed_endian_reg_write_data >> (8 * shiftdata);
-  assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;
-  assign final_reg_write_data = loadtype[2] ? reg_write_data : loadtype[1] ? loadtype[0] ? loadlorloadr ? fixed_endian_reg_write_data >> (8*(3 - shiftdata)) : fixed_endian_reg_write_data << (8*shiftdata) : {immediate, 16'h0000} :loadtype[0] ? sign_extended_reg_write_data : fixed_endian_reg_write_data;
+control_unit control_0(
+    .opcode(instr[31:26]),
+    .state(state),
+    .fun(instr[5:0]),
+    .branchFunc(instr[20:16]),
+    .waitrequest(waitrequest),
+    .address_allign(address_internal[1:0]),
 
+    .byteenable(byteenable),
+    .bytewrite(bytewrite),
+    .halfwrite(halfwrite),
+    .ALUOp(ALUOp),
+    .ALUSrc(ALUSrc),
+    .singed_imm(singed_imm),
+    .jump(jump),
+    .branch(branch),
+    .memread(read),
+    .memwrite(write),
+    .regdst(regdst),
+    .memtoreg(memtoreg),
+    .regwrite(regwrite),
+    .inwrite(inwrite),
+    .pctoadd(pctoadd),
+    .pcwrite(pcwrite),
+    .regtojump(regtojump),
+    .div_mult_en(div_mult_en),
+    .div_mult_signed(div_mult_signed),
+    .div_mult_op(div_mult_op),
+    .hitoreg(hitoreg),
+    .lotoreg(lotoreg),
+    .link(link),
+    .reg_link(reg_link),
+    .loadimmed(loadimmed),
+    .ExtendOp(ExtendOp)
+);
 
-  //implementing main multiplexers
-  assign address = iord ? alu_result : pc_value;
-  assign reg_write_address = regdst[1] ? 31 : regdst[0] ? reg_dest : reg_source_2;
-  assign to_reg_write = memtoreg ? readdata : alu_result;
-  assign alu_in_a = alusrca ? read_reg_a_current : pc_value;
-  assign alu_in_b = alusrcb[2] ? zero_extended_immediate : alusrcb[1] ? (alusrcb[0] ? (sign_extended_immediate << 2) : sign_extended_immediate ) : (alusrcb[0] ? 4 : read_reg_b_current);
-  assign increment_pc = pcsource[1] ? (pcsource[0] ? read_reg_a_current : {pc_value[31:28], jmp_address, 2'b00}) : (pcsource[0] ? alu_out: alu_result);
-  assign pc_address_in = jumpcondreg ? jumpdestreg : increment_pc;
-
-
-  //implementing all single registers
-  always_ff @(posedge clk) begin
-    read_reg_a_current <= read_reg_1;
-    read_reg_b_current <= read_reg_2;
-    if (jumpconen) begin
-      jumpcondreg <= ((condition & pcwritecond) || jump);
+// instr register
+always_ff @(posedge clk) begin
+    if(inwrite) begin
+        instr_reg <= readdata;
     end
-    if ((condition & pcwritecond) || jump) begin
-      jumpdestreg <= increment_pc;
+end
+assign instr = (state==2)?readdata:instr_reg;
+
+//register file
+logic[31:0] read_data1, read_data2;
+logic[4:0] write_reg;
+logic[31:0] write_data;
+logic branch_regwrite;
+assign write_reg = (regdst == 0) ? ((link&!reg_link)? 5'b11111:instr[20:16]) : instr[15:11];
+
+register_file reg_file_0(
+    .clk(clk),
+    .reset(reset),
+
+    .read_index1(instr[25:21]),
+    .read_index2(instr[20:16]),
+    .write_enable(regwrite),
+    .write_reg(write_reg),
+    .write_data(write_data),
+
+    .read_data1(read_data1),
+    .read_data2(read_data2),
+    .register_v0(register_v0)
+);
+
+// multiply and divide alu and register
+logic[31:0] hi, lo;
+div_mult_reg div_mult_reg_0(
+    .clk(clk),
+    .reset(reset),
+
+    .write_en(div_mult_en),
+    .sin(div_mult_signed),
+    .op(div_mult_op),
+    .in_1(read_data1),
+    .in_2(read_data2),
+
+    .hi(hi),
+    .lo(lo)
+);
+
+
+logic[31:0] unextend_out, extend_out;
+assign unextend_out = {16'h0000, instr[15:0]};
+assign extend_out = {{16{instr[15]}}, instr[15:0]};
+
+logic[31:0] alu_b;
+assign alu_b = (ALUSrc == 0) ? read_data2 : (singed_imm?extend_out:unextend_out);
+
+//ALU Control
+logic[4:0] ALUCtrl;
+alu_control alu_ctrl_0(
+    .ALUOp(ALUOp),
+    .FuncCode(instr[5:0]),
+    .ALUCtrl(ALUCtrl),
+    .BranchzFunc(instr[20:16])
+);
+
+//ALU
+logic zero;
+logic[31:0] ALU_out;
+
+alu alu_0(
+    .a(read_data1),
+    .b(alu_b),
+    .as(instr[10:6]),
+    .alu_control(ALUCtrl),
+    .result(ALU_out),
+    .zero(zero)
+);
+
+// pc_calculated on branch
+logic[31:0] add_out;
+assign add_out = pc_out + (extend_out << 2);
+
+logic and_result;
+assign and_result = branch && zero;
+
+logic delay_ctrl;
+logic[31:0] delay_address;
+delay_reg delay_reg0(
+    .clk(clk),
+    .add_out(add_out),
+    .and_result(and_result),
+    .jump(jump),
+    .jump_address((regtojump ? read_data1 : {pc_out[31:28],{2'b00,instr[25:0]}<<2})-4),
+    .exec1(state ==3),
+    .exec2(state ==4),
+    .delay_address(delay_address),
+    .delay_ctrl(delay_ctrl)
+);
+
+//MUX3
+logic[31:0] loadresult;
+assign loadresult = {instr[15:0],16'h0000};
+
+//MUX4 Location
+assign pc_in = (delay_ctrl ? delay_address : pc_out)+4;
+//from data memory
+logic[31:0] address_internal;
+assign address_internal = pctoadd?pc_out:ALU_out;
+assign address = {address_internal[31:2],2'b00};
+
+//writedata always second output of register shifted based on address
+logic[31:0] half_shifter, byte_shifter;
+assign half_shifter = (halfwrite & address_internal[1])?(read_data2<<16):read_data2;
+assign byte_shifter = (bytewrite & address_internal[0])?(half_shifter<<8):half_shifter;
+assign writedata = byte_shifter;
+
+
+//I really hate this way of implementing this function, but selection in wire (like instr[5:2]) in not allow in always_comb
+logic[31:0] ExtendRes1,ExtendRes2,ExtendRes3,ExtendRes0;
+logic[15:0] HalfRes;
+
+assign HalfRes = address_internal[1]?readdata[31:16]:readdata[15:0];
+
+logic[7:0] byteRes;
+
+assign byteRes = address_internal[0]?HalfRes[15:8]:HalfRes[7:0];
+
+assign ExtendRes3 = {{25{byteRes[7]}}, byteRes[6:0] };    //LB
+assign ExtendRes2 = {24'h000000,byteRes[7:0]};          //LBU
+assign ExtendRes1 = { {17{HalfRes[15]}}, HalfRes[14:0] }; //LH
+assign ExtendRes0 = {16'h0000,HalfRes[15:0]};           //LHUs
+
+logic[31:0] LWL_result, LWR_result;
+
+integer LWL_index;
+assign LWL_index = 8*address_internal[0]+16*address_internal[1];
+assign LWL_result = (readdata[31:0] <<(24-LWL_index)) + (read_data2[31:0] <<(8+LWL_index) >>(8+LWL_index));
+assign LWR_result = (readdata[31:0] >>LWL_index) + (read_data2[31:0] >>(32-LWL_index) <<(32-LWL_index));
+
+always_comb begin
+    if(memtoreg) begin
+        write_data = readdata;
     end
-    if (aluouten) begin
-      alu_out <= alu_result;
+    else if(link) begin
+        write_data = pc_out+8;
     end
-  end
-
-  //instantiate all modules 
-  mips_cpu_pc cpu_pc (
-      .pcin(pc_address_in),
-      .clk(clk),
-      .reset(reset),
-      .pcenable(pcwrite),
-      .pcout(pc_value)
-  );
-
-  mips_cpu_controller cpu_control (
-      .opcode(opcode),
-      .fncode(fncode),
-      .memoryadress(alu_result),
-      .regimm(reg_source_2),
-      .state(state),
-      .waitrequest(waitrequest),
-      .regdst(regdst),
-      .loadtype(loadtype),
-      .loadlorloadr(loadlorloadr),
-      .regwrite(regwrite),
-      .orwrite(orwrite),
-      .iord(iord),
-      .irwrite(ir_write),
-      .pcwrite(pcwrite),
-      .jump(jump),
-      .jumpconen(jumpconen),
-      .threestate(threestate),
-      .pcsource(pcsource),
-      .pcwritecond(pcwritecond),
-      .memread(read),
-      .memwrite(write),
-      .endiantype(endiantype),
-      .shiftdata(shiftdata),
-      .byteenable(byteenable),
-      .memtoreg(memtoreg),
-      .aluop(aluop),
-      .muldivwrite(muldivwrite),
-      .alusrcb(alusrcb),
-      .alusrca(alusrca),
-      .aluouten(aluouten)
-  );
-
-  mips_cpu_instruction_reg cpu_instruction_register (
-      .clk(clk),
-      .enable(ir_write),
-      .state(state),
-      .memory_output(dataflipped),
-      .control_input(opcode),  //instruction[31-26]
-      .source_1(reg_source_1),  // instruction[25:21] 
-      .source_2(reg_source_2),  //instruction[20:16]   
-      .dest(reg_dest),  //instruction[15:11]
-      .immediate(immediate),  //instruction[15:0]
-      .jmp_address(jmp_address),  //instruction[25:0]
-      .shamt(shift),  //instruction[6:10]
-      .funct(fncode)  //instruction[5:0]
-  );
-
-  mips_cpu_register_file cpu_register_file (
-      .clk(clk),
-      .reset(reset),
-      .orwrite(orwrite),
-      .shiftdata(shiftdata),
-      .loadlorloadr(loadlorloadr),
-      .write_enable(regwrite),
-      .read_reg_1(reg_source_1),
-      .read_reg_2(reg_source_2),
-      .write_reg(reg_write_address),
-      .write_data(final_reg_write_data),
-      .read_data_1(read_reg_1),
-      .read_data_2(read_reg_2),
-      .read_data_v0(register_v0)
-  );
-
-  mips_cpu_alu cpu_alu (
-      .clk(clk),
-      .reset(reset),
-      .state(state),
-      .alu_func(toalu),
-      .mult_op(tomult),
-      .a(alu_in_a),
-      .b(alu_in_b),
-      .shift(shift),
-      .write(muldivwrite),
-      .condition(condition),
-      .result(alu_result)
-  );
-
-  mips_cpu_alu_control cpu_alu_control (
-      .aluOp (aluop),
-      .funct (fncode),
-      .toAlu (toalu),
-      .toMult(tomult)
-  );
-
+    else if(loadimmed) begin
+        write_data = loadresult;
+    end
+    else if(hitoreg) begin
+        write_data = hi;
+    end
+    else if(lotoreg) begin
+        write_data = lo;
+    end
+    else if(ExtendOp != 0)begin 
+        write_data = ExtendRes1;
+        case(ExtendOp)
+            3'b001:write_data = LWL_result;
+            3'b010:write_data = LWR_result;
+            3'b100:write_data = ExtendRes0;
+            3'b101:write_data = ExtendRes1;
+            3'b110:write_data = ExtendRes2;
+            3'b111:write_data = ExtendRes3;
+        endcase 
+    end 
+    else begin
+        write_data = ALU_out;
+    end
+end
 
 endmodule

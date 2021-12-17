@@ -1,0 +1,177 @@
+addiu_1 addiu Pass
+addiu_2 addiu Pass
+addiu_3 addiu Pass
+addiu_4 addiu Pass
+addu_1 addu Pass
+addu_2 addu Pass
+addu_3 addu Pass
+and_1 and Pass
+and_2 and Pass
+andi_1 andi Pass
+andi_2 andi Pass
+beq_1 beq Pass
+beq_2 beq Pass
+beq_3 beq Pass
+beq_4 beq Pass
+bgez_1 bgez Pass
+bgez_2 bgez Pass
+bgez_3 bgez Pass
+bgez_4 bgez Pass
+bgez_5 bgez Pass
+bgez_6 bgez Pass
+bgez_7 bgez Pass
+bgezal_1 bgezal Pass
+bgezal_2 bgezal Pass
+bgezal_4 bgezal Pass
+bgezal_5 bgezal Pass
+bgezal_6 bgezal Pass
+bgezal_7 bgezal Pass
+bgezal_8 bgezal Pass
+bgezal_9 bgezal Pass
+bgtz_1 bgtz Pass
+bgtz_2 bgtz Pass
+bgtz_3 bgtz Pass
+blez_1 blez Pass
+blez_2 blez Pass
+blez_3 blez Pass
+bltz_1 bltz Pass
+bltz_2 bltz Pass
+bltz_3 bltz Pass
+bltzal_1 bltzal Pass
+bltzal_2 bltzal Pass
+bltzal_3 bltzal Pass
+bltzal_4 bltzal Pass
+bltzal_5 bltzal Pass
+bne_1 bne Pass
+bne_2 bne Pass
+bne_3 bne Pass
+div_1 div Pass
+div_2 div Pass
+div_3 div Pass
+div_4 div Pass
+div_5 div Pass
+div_6 div Pass
+div_7 div Pass
+div_8 div Pass
+div_9 div Pass
+divu_1 divu Pass
+divu_2 divu Pass
+divu_3 divu Pass
+divu_4 divu Pass
+divu_5 divu Pass
+divu_6 divu Pass
+factorial_1 factorial Pass
+j_1 j Pass
+j_2 j Pass
+jal_1 jal Pass
+jal_2 jal Pass
+jalr_1 jalr Pass
+jalr_2 jalr Pass
+jalr_3 jalr Pass
+jr_1 jr Pass
+jr_2 jr Pass
+lb_1 lb Fail 	# v0=0 -> 47 
+lb_2 lb Fail 	# v0=0 -> 4294967293 
+lb_3 lb Fail 	# v0=4294967295 -> 4294967248 
+lb_4 lb Fail 	# v0=4294967248 -> 4294967295 
+lbu_1 lbu Fail 	# v0=0 -> 47 
+lbu_2 lbu Fail 	# v0=0 -> 253 
+lbu_3 lbu Fail 	# v0=208 -> 255 
+lbu_4 lbu Fail 	# v0=3 -> 255 
+lbu_5 lbu Fail 	# v0=255 -> 208 
+lbu_6 lbu Fail 	# v0=255 -> 176 
+lh_1 lh Fail 	# v0=0 -> 20475 
+lh_2 lh Fail 	# v0=20475 -> 0 
+lh_3 lh Fail 	# v0=4294946821 -> 4294967295 
+lh_4 lh Fail 	# v0=4294967295 -> 4294946821 
+lhu_1 lhu Fail 	# v0=20475 -> 0 
+lhu_2 lhu Fail 	# v0=0 -> 20475 
+lhu_3 lhu Fail 	# v0=45061 -> 65535 
+lhu_4 lhu Fail 	# v0=65535 -> 45061 
+lui_1 lui Pass
+lw_1 lw Pass
+lw_2 lw Pass
+lwl_1 lwl Fail 	# v0=2147483648 -> 67108992 
+lwl_2 lwl Fail 	# v0=32769 -> 8388865 
+lwl_3 lwl Fail 	# v0=540033026 -> 809500930 
+lwr_1 lwr Fail 	# v0=67108992 -> 4 
+lwr_2 lwr Fail 	# v0=1024 -> 262144 
+lwr_3 lwr Fail 	# v0=17834032 -> 16912416 
+mthi_1 mthi Pass
+mtlo_1 mtlo Pass
+mult_1 mult Pass
+mult_2 mult Pass
+mult_3 mult Pass
+mult_4 mult Pass
+mult_5 mult Pass
+mult_6 mult Pass
+multu_1 multu Pass
+multu_2 multu Pass
+multu_3 multu Pass
+multu_4 multu Pass
+multu_5 multu Pass
+multu_6 multu Pass
+or_1 or Pass
+or_2 or Pass
+ori_1 ori Pass
+ori_2 ori Pass
+sb_1 sb Pass
+sb_2 sb Pass
+sb_3 sb Pass
+sb_4 sb Pass
+sb_5 sb Pass
+sb_6 sb Pass
+sb_7 sb Pass
+sb_8 sb Pass
+sb_9 sb Pass
+sh_1 sh Pass
+sh_2 sh Pass
+sh_3 sh Pass
+sh_4 sh Pass
+sh_5 sh Pass
+sll_1 sll Pass
+sll_2 sll Pass
+sll_3 sll Pass
+sll_4 sll Pass
+sllv_1 sllv Pass
+sllv_2 sllv Pass
+sllv_3 sllv Pass
+sllv_4 sllv Pass
+slt_1 slt Pass
+slt_2 slt Pass
+slt_3 slt Pass
+slti_1 slti Pass
+slti_2 slti Pass
+slti_3 slti Pass
+slti_4 slti Pass
+slti_5 slti Pass
+sltiu_1 sltiu Pass
+sltiu_2 sltiu Fail 	# v0=1 -> 0 
+sltiu_3 sltiu Pass
+sltiu_4 sltiu Fail 	# v0=65534 -> 65535 
+sltu_1 sltu Pass
+sltu_2 sltu Pass
+sltu_3 sltu Pass
+sra_1 sra Pass
+sra_2 sra Pass
+sra_3 sra Pass
+srav_1 srav Pass
+srav_2 srav Pass
+srav_3 srav Pass
+srav_4 srav Pass
+srl_1 srl Pass
+srl_2 srl Pass
+srlv_1 srlv Pass
+srlv_2 srlv Pass
+srlv_3 srlv Pass
+srlv_4 srlv Pass
+subu_1 subu Pass
+subu_2 subu Pass
+subu_3 subu Pass
+sw_1 sw Pass
+sw_2 sw Pass
+xor_1 xor Pass
+xor_2 xor Pass
+xor_3 xor Pass
+xori_1 xori Pass
+xori_2 xori Pass

@@ -1,103 +1,63 @@
-module mips_cpu_alu_control (
-    input  logic [3:0] aluOp,
-    input  logic [5:0] funct,
-    output logic [4:0] toAlu,
-    output logic [2:0] toMult
+module alu_control(
+    input logic[3:0] ALUOp,
+    input logic[5:0] FuncCode,
+    input logic[4:0] BranchzFunc,
+
+    output logic[4:0] ALUCtrl
 );
-  always_comb begin
-    case (aluOp)
-      4'b0000: begin
-        toMult = 0;
-        toAlu  = 5'b00000;  // add
-      end
-      4'b0001: begin
-        toMult = 0;
-        toAlu  = 5'b00011;  // subtract
-      end
-      4'b0010: begin
-        toMult = 0;
-        case (funct)
-          6'b100001: toAlu = 5'b00000;  // add unsigned
-          6'b100100: toAlu = 5'b00001;  // AND
-          6'b100101: toAlu = 5'b00010;  // OR
-          6'b101010: toAlu = 5'b00100;  // SLT
-          6'b101011: toAlu = 5'b00101;  // SLTU
-          6'b000000: toAlu = 5'b00110;  // SLL
-          6'b000100: toAlu = 5'b00111;  // SLLV
-          6'b000010: toAlu = 5'b01000;  // SRL
-          6'b000110: toAlu = 5'b01001;  // SRLV
-          6'b000011: toAlu = 5'b01010;  // SRA
-          6'b000111: toAlu = 5'b01011;  // SRAV
-          6'b100011: toAlu = 5'b00011;  // SUBU
-          6'b100110: toAlu = 5'b01100;  // XOR
-        endcase
-      end
 
-      4'b0011: begin
-        toMult = 0;
-        toAlu  = 5'b10010;  // BEQ
-      end
-      4'b0100: begin
-        toMult = 0;
-        toAlu  = 5'b01101;  // BGEZ
-      end
-      4'b0101: begin
-        toMult = 0;
-        toAlu  = 5'b01110;  // BGTZ
-      end
-      4'b0110: begin
-        toMult = 0;
-        toAlu  = 5'b01111;  // BLEZ
-      end
-      4'b0111: begin
-        toMult = 0;
-        toAlu  = 5'b10000;  // BLTZ
-      end
-      4'b1000: begin
-        toMult = 0;
-        toAlu  = 5'b10001;  // BNE
-      end
-      // MULT, DIV etc.
-      4'b1001:
-      case (funct)
-        6'b011000: toMult = 3'b011;  // MULT
-        6'b011001: toMult = 3'b001;  // MULTU
-        6'b011010: toMult = 3'b010;  // DIV
-        6'b011011: toMult = 3'b000;  // DIVU
-        6'b010001: toMult = 3'b100;  // MTHI
-        6'b010011: toMult = 3'b101;  // MTLO
-        6'b010000: toMult = 3'b110;  // MFHI
-        6'b010010: toMult = 3'b111;  // MFLO
-      endcase
+logic[4:0] func;
+logic[4:0] BranchCtrl;
 
-      // for I type instructions
-      4'b1010: begin
-        toMult = 0;
-        toAlu  = 5'b00001;  // ANDI
-      end
-      4'b1011: begin
-        toMult = 0;
-        toAlu  = 5'b00010;  // ORI
-      end
-      4'b1100: begin
-        toMult = 0;
-        toAlu  = 5'b01100;  // XORI
-      end
-      4'b1101: begin
-        toMult = 0;
-        toAlu  = 5'b00100;  // SLTI
-      end
-      4'b1110: begin
-        toMult = 0;
-        toAlu  = 5'b00101;  // SLTUI
-      end
+always_comb begin
+    case(FuncCode)
+        6'b100001: func = 5'b00010; //addu
+        6'b100011: func = 5'b00110; //subu
+        6'b100101: func = 5'b00001; //or
+        6'b100110: func = 5'b01101; //xor
+        6'b100111: func = 5'b01100; //nor
+        6'b101011: func = 5'b00111; //sltu
+        6'b101010: func = 5'b01000; //slt
+        6'b000000: func = 5'b01001; //sll
+        6'b000011: func = 5'b01010; //sra
+        6'b000010: func = 5'b01011; //srl
+        6'b000100: func = 5'b01110; //sllv
+        6'b000111: func = 5'b01111; //srav
+        6'b000110: func = 5'b10000; //srlv
 
-      default: begin
-        toAlu  = 5'b00000;
-        toMult = 3'b000;
-      end
-
+        default: func = 5'b00000;
     endcase
-  end
+end
+
+always_comb begin 
+    case(BranchzFunc)
+        5'b00001: BranchCtrl = 5'b11011; //BGEZ
+        5'b10001: BranchCtrl = 5'b11011; //BGEZAL 
+        5'b00000: BranchCtrl = 5'b11111; //BLTZ
+        5'b10000: BranchCtrl = 5'b11111; //BLTZAL     
+        default: BranchCtrl = 5'b00000;
+    endcase
+end
+
+always_comb begin
+    case(ALUOp)
+        4'b0000: ALUCtrl = 5'b00010; //add
+        4'b0001: ALUCtrl = 5'b00110; //sub
+        4'b0010: ALUCtrl = func; //R-type instructions
+        4'b0011: ALUCtrl = 5'b00010; //add
+        4'b0100: ALUCtrl = 5'b00000; //Bitwise AND
+        4'b0101: ALUCtrl = 5'b00001; //Bitwise OR
+        4'b0110: ALUCtrl = 5'b01101; //Bitwise XOR
+        4'b0111: ALUCtrl = 5'b01000; //SLT
+        4'b1100: ALUCtrl = 5'b00111; //SLTU (It's not in order I know but we sorta ran out of spots for this)
+
+        4'b1000: ALUCtrl = 5'b11000; //bne
+        4'b1001: ALUCtrl = 5'b11001; //bgtz
+        4'b1010: ALUCtrl = 5'b11010; //blez
+        4'b1011: ALUCtrl = BranchCtrl; //BLTZ and OTHER_BRANCHZ instructions
+        default: ALUCtrl = 0;
+    endcase
+end
+       
 
 endmodule
