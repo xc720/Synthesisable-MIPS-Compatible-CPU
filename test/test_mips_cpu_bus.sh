@@ -62,7 +62,7 @@ for f in $assembly/*.asm; do
   
   # Runs MIPS iverilog with hex code into test bench
   iverilog -Wall -g 2012 -o $tbRAM/tb.out $RTLDR $RTLDR1 $tbRAM/mips_cpu_*.v -P mips_cpu_bus_tb.RAM_INIT_FILE=\"$hex/$f.txt\" >/dev/null && ./$tbRAM/tb.out >/dev/null || true
-  rm $tbRAM/tb.out
+  rm -rf $tbRAM/tb.out
 
   sed -i "s/ //g" $compiled_results/result.txt                      # Removes whitespace
   mv $compiled_results/result.txt $compiled_results/$f.result.txt   # Renames output to include instruction name
@@ -73,7 +73,7 @@ for f in $assembly/*.asm; do
   if cmp --silent -- $compiled_results/$f.result.txt $check_results/$f.result.txt; then
     printf "${f%.*} "
     printf "$instruction "
-    printf "Pass\n"
+    printf "Pass\n" 
  
   else
     printf "${f%.*} "
@@ -83,6 +83,6 @@ for f in $assembly/*.asm; do
   fi
 done
 # Removes temp directories
-rm -r $hex
-rm -r $compiled_results
-rm -r ./test/testbench_and_RAM/mips_cpu_bus_tb.vcd
+rm -rf $hex
+rm -rf $compiled_results
+rm -rf ./test/testbench_and_RAM/mips_cpu_bus_tb.vcd
