@@ -208,8 +208,6 @@ module mips_cpu_bus (
   mips_cpu_register_file cpu_register_file (
       .clk(clk),
       .reset(reset),
-      .state(state),
-      .threestate(threestate),
       .orwrite(orwrite),
       .shiftdata(shiftdata),
       .loadlorloadr(loadlorloadr),

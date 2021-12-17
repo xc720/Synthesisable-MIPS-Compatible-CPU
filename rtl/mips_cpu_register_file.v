@@ -3,8 +3,6 @@ module mips_cpu_register_file (
     input logic clk,
     input logic reset,
     input logic write_enable,
-    input logic [2:0] state,
-    input logic threestate,
     input logic orwrite,
     input logic [1:0] shiftdata,
     input logic loadlorloadr,
@@ -45,14 +43,7 @@ module mips_cpu_register_file (
         end else begin
           register[write_reg] <= write_data;
         end
-        //$display("%d", write_data);
       end
-      //if (state == 1 || state == 0) begin
-      //  for (int i = 0; i < 32; i++) begin
-      //    $display("register_v", i, " = %d", register[i]);
-      //  end
-      //  $display("\n");
-      //end
     end
   end
 
