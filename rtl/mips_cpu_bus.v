@@ -99,7 +99,7 @@ module mips_cpu_bus (
     end else if (pc_value == 0 && (state == 4 || (state == 3 && threestate))) begin
       state  <= 0;
       active <= 0;
-    end else if (!waitrequest) begin
+    end else if (!waitrequest || (!read && !write)) begin
       if (state == 4 || (state == 3 && threestate)) begin
         state <= 1;
       end else if (!state == 0) begin
