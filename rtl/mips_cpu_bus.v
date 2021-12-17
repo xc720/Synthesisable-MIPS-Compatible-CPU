@@ -14,10 +14,6 @@ module mips_cpu_bus (
     output logic [3:0] byteenable,
     input logic [31:0] readdata
 );
-  logic [31:0] dataflipped;
-  assign dataflipped = {{readdata[07:00]}, {readdata[15:08]}, {readdata[23:16]}, {readdata[31:24]}};
-
-
   //variables for pc
   logic [31:0] pc_address_in, pc_value;
 
@@ -77,12 +73,14 @@ module mips_cpu_bus (
 
   logic [1:0] pcsource, regdst, shiftdata, endiantype;
   logic [2:0] alusrcb, loadtype;
-  logic [3:0] aluop;
+  logic [ 3:0] aluop;
 
   //variables for state machine
-  logic [2:0] state;
+  logic [ 2:0] state;
 
-
+  //varibles for memory endian conversion
+  logic [31:0] fixed_endian_reg_write_data;
+  logic [31:0] dataflipped;
 
   //initial conditions
   initial begin
@@ -108,6 +106,9 @@ module mips_cpu_bus (
     end
   end
 
+  //interpreting the readdata from RAM as big endian
+  assign dataflipped = {{readdata[07:00]}, {readdata[15:08]}, {readdata[23:16]}, {readdata[31:24]}};
+
   //sign extending
   assign sign_extended_immediate = immediate[15] ? {16'hFFFF, immediate} : {16'h0000, immediate};
   assign zero_extended_immediate = {16'h0000, immediate};
@@ -116,7 +117,6 @@ module mips_cpu_bus (
   assign writedata = endiantype[1] ? {{read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}, {read_reg_b_current[23:16]}, {read_reg_b_current[31:24]}} : endiantype[0] ? {{read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}, {read_reg_b_current[07:00]}, {read_reg_b_current[15:08]}} : read_reg_b_current << (8 * shiftdata);
 
   //assigns for load instrutions
-  logic [31:0] fixed_endian_reg_write_data;
   assign fixed_endian_reg_write_data = endiantype[1] ? {{to_reg_write[07:00]}, {to_reg_write[15:08]}, {to_reg_write[23:16]}, {to_reg_write[31:24]}} : endiantype[0] ? {{to_reg_write[23:16]}, {to_reg_write[31:24]}, {to_reg_write[07:00]}, {to_reg_write[15:08]}} : to_reg_write;
   assign reg_write_data = fixed_endian_reg_write_data >> (8 * shiftdata);
   assign sign_extended_reg_write_data = reg_write_data[15:8] == 0 ? reg_write_data[7] ? {24'hFFFFFF, reg_write_data[7:0]} : reg_write_data : reg_write_data[15] ? {16'hFFFF, reg_write_data[15:0]} : reg_write_data;

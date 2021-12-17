@@ -7,7 +7,6 @@ module mips_cpu_controller (
     input logic waitrequest,
 
     output logic [1:0] regdst,
-    output logic [1:0] shiftload,
     output logic [2:0] loadtype,
     output logic loadlorloadr,
     output logic [1:0] endiantype,
