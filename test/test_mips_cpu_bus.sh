@@ -85,3 +85,4 @@ done
 # Removes temp directories
 rm -r $hex
 rm -r $compiled_results
+rm -r ./test/testbench_and_RAM/mips_cpu_bus_tb.vcd
