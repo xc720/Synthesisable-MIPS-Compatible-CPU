@@ -37,9 +37,9 @@ module mips_cpu_alu (
         5'b00000: result = a + b;  // ADDU  (immediate or not determined elsewhere)
         5'b00001: result = a & b;  // AND
         5'b00010: result = a | b;  // OR
-        5'b00011: result = $unsigned(a) - $unsigned(b);  // SUBU
+        5'b00011: result = a - b;  // SUBU
         5'b00100: result = $signed(a) < $signed(b);  // SLT
-        5'b00101: result = $unsigned(a) < $unsigned(b);  // SLTU
+        5'b00101: result = a < b;  // SLTU
         5'b00110: result = (b << shift);  // SLL
         5'b00111: result = b << a;  // SLLV
         5'b01000: result = b >> shift;  // SRL
