@@ -1,0 +1,4 @@
+*.stdout
+*.out-v0-lines
+*.out-v0
+*.out

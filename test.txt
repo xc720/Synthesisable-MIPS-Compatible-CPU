@@ -1,0 +1,229 @@
+addiu_1 addiu Pass
+addiu_2 addiu Pass
+addiu_3 addiu Pass
+addiu_4 addiu Pass
+addiu_5 addiu Pass
+addu_1_plus1 addu Pass
+addu_2 addu Pass
+addu_3 addu Pass
+and_1 and Pass
+and_2 and Pass
+and_3 and Pass
+andi_1 andi Pass
+andi_2 andi Pass
+andi_3 andi Pass
+beq_1 beq Pass
+beq_2 beq Pass
+beq_3 beq Pass
+beq_4 beq Pass
+bgez_1 bgez Pass
+bgez_2 bgez Pass
+bgez_3 bgez Pass
+bgez_4 bgez Pass
+bgez_5 bgez Pass
+bgez_6_nop_delay_slot bgez Pass
+bgez_7 bgez Pass
+bgezal_1 bgezal Pass
+bgezal_10_link bgezal Pass
+bgezal_11 bgezal Pass
+bgezal_2 bgezal Pass
+bgezal_3 bgezal Pass
+bgezal_4 bgezal Pass
+bgezal_5 bgezal Pass
+bgezal_6_nop_delay_slot bgezal Pass
+bgezal_7_nop_delay_slot_link bgezal Pass
+bgezal_8_link bgezal Pass
+bgezal_9_link bgezal Pass
+bgtz_1 bgtz Pass
+bgtz_2 bgtz Pass
+bgtz_3 bgtz Pass
+bgtz_4 bgtz Pass
+bgtz_5 bgtz Pass
+bgtz_6_nop_delay_slot bgtz Pass
+bgtz_7 bgtz Pass
+blez_1 blez Pass
+blez_2 blez Pass
+blez_3 blez Pass
+blez_4 blez Pass
+blez_5 blez Pass
+blez_6_nop_delay_slot blez Pass
+blez_7 blez Pass
+bltz_1 bltz Pass
+bltz_2 bltz Pass
+bltz_3 bltz Pass
+bltz_4 bltz Pass
+bltz_5 bltz Pass
+bltz_6_nop_delay_slot bltz Pass
+bltz_7 bltz Pass
+bltzal_1 bltzal Pass
+bltzal_10_link bltzal Pass
+bltzal_11 bltzal Pass
+bltzal_2 bltzal Pass
+bltzal_3 bltzal Pass
+bltzal_4 bltzal Pass
+bltzal_5 bltzal Pass
+bltzal_6_nop_delay_slot bltzal Pass
+bltzal_7_nop_delay_slot_link bltzal Pass
+bltzal_8_link bltzal Pass
+bltzal_9_link bltzal Pass
+bne_1 bne Pass
+bne_2 bne Pass
+bne_3_loop bne Pass
+div_1 div Pass
+div_10_negative div Pass
+div_11_zero div Pass
+div_12_negative div Pass
+div_13_negative div Pass
+div_2 div Pass
+div_3 div Pass
+div_4 div Pass
+div_5 div Pass
+div_6_negative div Pass
+div_7_negative div Pass
+div_8_negative div Pass
+div_9_negative div Pass
+divu_1 divu Pass
+divu_10_negative divu Pass
+divu_11_zero divu Pass
+divu_2 divu Pass
+divu_3 divu Pass
+divu_4 divu Pass
+divu_5 divu Pass
+divu_6 divu Pass
+divu_7 divu Pass
+divu_8_negative divu Pass
+divu_9_negative divu Pass
+j_1 j Pass
+j_2 j Pass
+j_3_nop_delay_slot j Pass
+jal_1_nop_delay_slot jal Pass
+jal_2 jal Pass
+jalr_1_nop_delay_slot jalr Pass
+jalr_2 jalr Pass
+jalr_3_not_ra_link jalr Pass
+jr_1 jr Pass
+jr_2 jr Pass
+jr_3 jr Pass
+lb_1 lb Fail  # Verilog testbench returned error code
+lb_2 lb Fail  # Verilog testbench returned error code
+lb_3 lb Fail  # Verilog testbench returned error code
+lb_4 lb Fail  # Verilog testbench returned error code
+lb_5 lb Pass
+lb_6 lb Fail  # Final register v0 value does not match
+lb_7 lb Fail  # Verilog testbench returned error code
+lbu_1 lbu Fail  # Final register v0 value does not match
+lbu_2 lbu Fail  # Verilog testbench returned error code
+lbu_3 lbu Fail  # Verilog testbench returned error code
+lbu_4 lbu Fail  # Verilog testbench returned error code
+lbu_5 lbu Pass
+lbu_6 lbu Fail  # Verilog testbench returned error code
+lh_1 lh Fail  # Final register v0 value does not match
+lh_2 lh Fail  # Verilog testbench returned error code
+lh_3 lh Fail  # Verilog testbench returned error code
+lh_4 lh Fail  # Verilog testbench returned error code
+lh_5 lh Fail  # Final register v0 value does not match
+lh_6 lh Fail  # Verilog testbench returned error code
+lh_7 lh Fail  # Verilog testbench returned error code
+lhu_1 lhu Fail  # Final register v0 value does not match
+lhu_2 lhu Fail  # Verilog testbench returned error code
+lhu_3 lhu Pass
+lui_1 lui Pass
+lui_2 lui Pass
+lui_3 lui Pass
+lw_1 lw Pass
+lw_2 lw Pass
+lwl_1 lwl Fail  # Final register v0 value does not match
+lwl_2 lwl Fail  # Verilog testbench returned error code
+lwl_3 lwl Fail  # Verilog testbench returned error code
+lwl_4 lwl Fail  # Verilog testbench returned error code
+lwl_6 lwl Fail  # Verilog testbench returned error code
+lwr_1 lwr Fail  # Final register v0 value does not match
+lwr_2 lwr Fail  # Final register v0 value does not match
+lwr_3 lwr Fail  # Verilog testbench returned error code
+lwr_4 lwr Fail  # Verilog testbench returned error code
+lwr_5 lwr Fail  # Verilog testbench returned error code
+lwr_6 lwr Fail  # Verilog testbench returned error code
+mfhi_1 mfhi Pass
+mflo_1 mflo Pass
+mthi_1 mthi Pass
+mtlo_1 mtlo Pass
+mult_1 mult Pass
+mult_2_negative mult Pass
+mult_3_zero mult Pass
+mult_4_negative mult Pass
+mult_5_negative mult Pass
+mult_6 mult Pass
+mult_7_negative mult Pass
+mult_8_negative mult Pass
+multu_1 multu Pass
+multu_2_negative multu Pass
+multu_3_zero multu Pass
+multu_4_negative multu Pass
+multu_5_negative multu Pass
+multu_7_negative multu Pass
+multu_8 multu Pass
+multu_8_negative multu Pass
+or_1 or Pass
+or_2 or Pass
+ori_1 ori Pass
+ori_2 ori Pass
+sb_1 sb Pass
+sb_2 sb Fail  # Verilog testbench returned error code
+sb_3 sb Fail  # Verilog testbench returned error code
+sb_4 sb Fail  # Verilog testbench returned error code
+sb_5 sb Fail  # Verilog testbench returned error code
+sb_6 sb Fail  # Verilog testbench returned error code
+sb_7 sb Fail  # Verilog testbench returned error code
+sb_8 sb Fail  # Verilog testbench returned error code
+sb_9 sb Fail  # Verilog testbench returned error code
+sh_1 sh Fail  # Final register v0 value does not match
+sh_2 sh Fail  # Verilog testbench returned error code
+sh_3 sh Fail  # Verilog testbench returned error code
+sh_4 sh Fail  # Verilog testbench returned error code
+sh_5 sh Fail  # Verilog testbench returned error code
+sll_1 sll Pass
+sll_2 sll Pass
+sll_3 sll Pass
+sll_4 sll Pass
+sllv_1 sllv Pass
+sllv_2 sllv Pass
+sllv_3 sllv Pass
+sllv_4 sllv Pass
+slt_1 slt Pass
+slt_2 slt Pass
+slt_3 slt Pass
+slti_1 slti Pass
+slti_2 slti Pass
+slti_3 slti Pass
+slti_4 slti Fail  # Final register v0 value does not match
+slti_5 slti Pass
+sltiu_1 sltiu Pass
+sltiu_2 sltiu Pass
+sltiu_3 sltiu Fail  # Final register v0 value does not match
+sltiu_4 sltiu Pass
+sltu_1 sltu Pass
+sltu_2 sltu Pass
+sltu_3 sltu Fail  # Final register v0 value does not match
+sra_1 sra Pass
+sra_2 sra Pass
+sra_3 sra Pass
+srav_1 srav Pass
+srav_2 srav Pass
+srav_3 srav Pass
+srav_4 srav Pass
+srl_1 srl Pass
+srl_2 srl Pass
+srlv_1 srlv Pass
+srlv_2 srlv Pass
+srlv_3 srlv Pass
+srlv_4 srlv Pass
+subu_1minus3 subu Pass
+subu_3minus1 subu Pass
+subu_4 subu Pass
+sw_1 sw Pass
+sw_2 sw Pass
+xor_1 xor Pass
+xor_2 xor Pass
+xor_3 xor Pass
+xori_1 xori Pass
+xori_2 xori Pass
